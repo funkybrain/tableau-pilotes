@@ -1,0 +1,24 @@
+<section id="add">  
+  <form action="/" method="post">  
+    <textarea name="nom" placeholder="nom autruche"></textarea>
+    <textarea name="prenom" placeholder="prenom autruche"></textarea>
+    <textarea name="callsign" placeholder="callsign"></textarea>   
+    <input type="submit" value="Ajouter!">  
+  </form>  
+</section>
+
+<section id="autruches">
+<% @autruches.each do |autruche| %>  
+  <article class="complete">  
+    <p>  
+      <%=h autruche.nom %>
+      <%=h autruche.prenom %>
+      <%=h autruche.callsign %>
+      
+      <span><a href="/<%= autruche.id %>">[edit]</a></span>  
+    </p>  
+    <p class="meta">Created: <%= autruche.created_at %></p>  
+  </article>  
+<% end %>     
+
+</section>
