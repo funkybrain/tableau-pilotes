@@ -2,34 +2,16 @@ require 'sinatra'
 require 'data_mapper'
 require 'sinatra/flash'
 
+# include sub-files neede for main app
+require './models.rb'
+
 enable :sessions
 
 # set environment variables
 SITE_TITLE = "Le Tableau des Pilotes"
 SITE_DESCRIPTION = "Le QG des campagnes autruchiennes"
 
-# setup db connection
-# DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/autruche.db")
-# To pull db from heroku heroku db:pull postgres://localhost/project.db
-DataMapper::setup(:default, ENV['DATABASE_URL'] || "postgres://localhost/autruche.db")
 
-# define model
-class Autruche
-  include DataMapper::Resource # insures model persistence
-  
-  property :id,         Serial    #auto-increment integer key
-  property :nom,        String,  :required => true, :default => false
-  property :prenom,     String,  :required => true, :default => false
-  property :callsign,   String,  :required => true, :default => false
-  property :created_at,  DateTime  # handled automagically thanks to dm-timestamp
- 
-  
-end
-
-# call after all models and relationships have been defined
-DataMapper.finalize
-# call to create tables (migration is automatic)
-DataMapper.auto_upgrade!
 
 # escape html to avoid XSS attacks
 # this adds the h method from the Rack Utils class
