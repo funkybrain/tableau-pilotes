@@ -1,0 +1,22 @@
+<section id="add">  
+  <form action="/admin" method="post">  
+    <textarea name="nom" placeholder="titre campagne"></textarea>
+    <textarea name="descriptif" placeholder="descriptif campagne"></textarea>
+    <input type="submit" value="Ajouter!">  
+  </form>  
+</section>
+
+<section id="campagne">
+<% @campagnes.each do |campagne| %>  
+    
+    <p>  
+      <%=h campagne.id %>
+      <%=h campagne.nom %>
+      <%=h campagne.descriptif %>
+      <span><a href="/admin/<%= campagne.id %>">[edit]</a></span>  
+    </p>  
+    <p class="meta">Created: <%= campagne.created_at %></p>  
+    
+<% end %>     
+
+</section>
