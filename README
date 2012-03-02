@@ -1,2 +1,6 @@
 LOL du jour:
 - datamapper tried to plurialize 'Sortie' as 'Sorty' and not 'Sorties', hence the clusterfuck.
+
+Notes:
+- DM associations can be tricky. Use belongs_to when you want to put a foreign key in a table
+e.g. in Grade table -  'belongs_to :nation' will add an 'id_nation' f key in the Grade table. That's counter(my)intuition :/
