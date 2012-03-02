@@ -76,7 +76,7 @@ class Decoration
   property :nom,      Text, :required => true
   #property :image,    Binary
   
-  has 1, :nation
+  belongs_to :nation
   
   has n, :rewards
   has n, :avatars, :through => :rewards
@@ -88,7 +88,7 @@ class Grade
   property :nom,      Text, :required => true
   #property :image,    Binary
   
-  has 1, :nation
+  belongs_to :nation
   
   has n, :promotions
   has n, :avatars, :through =>:promotions
@@ -123,7 +123,7 @@ class Promotion
   belongs_to :avatar, :key => true
   belongs_to :grade,  :key => true
   
-  #has 1, :mission
+  has 1, :mission
 end
 
 # Reward model - defines the join between avatars and decorations
@@ -159,23 +159,25 @@ end
 
 class Monture
   include DataMapper::Resource
+  
   property :id,          Serial
   property :modele,      Text, :required => true
-  property :image,       Binary
+  #property :image,       Binary
   property :specialite,  Integer
   
-  has 1, :nation
+  belongs_to :nation
   belongs_to :flight
 end
 
 class Nation
   include DataMapper::Resource
+  
   property :id,        Serial
   property :pays,      Text, :required => true
   
-  belongs_to :monture
-  belongs_to :decoration
-  belongs_to :grade
+  has n, :monture
+  has n, :decoration
+  has n, :grade
 end
 
 
@@ -185,8 +187,10 @@ end
 
 # call after all models and relationships have been defined
 DataMapper.finalize
+
 # call to create tables (migration is automatic)
+# auto upgarde does not destroy schema
 DataMapper.auto_upgrade!
 
-# you will need to do auto_upgrade (without !) if you want to change or drop exisiting columns.
-# this WILL delete the database though
+# auto migrate destroys and rebuilds schema
+# DataMapper.auto_migrate!

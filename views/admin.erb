@@ -1,22 +1,43 @@
-<section id="add">  
-  <form action="/admin" method="post">  
-    <textarea name="nom" placeholder="titre campagne"></textarea>
-    <textarea name="descriptif" placeholder="descriptif campagne"></textarea>
-    <input type="submit" value="Ajouter!">  
-  </form>  
-</section>
+<% if @page=='campagne' %>
+  <section id="add">  
+    <form action="/admin/campagne" method="post">  
+      <textarea name="nom" placeholder="titre campagne"></textarea>
+      <textarea name="descriptif" placeholder="descriptif campagne"></textarea>
+      <input type="submit" value="Ajouter Campagne!">  
+    </form>  
+  </section>
+<% end %>
 
-<section id="campagne">
-<% @campagnes.each do |campagne| %>  
-    
-    <p>  
-      <%=h campagne.id %>
-      <%=h campagne.nom %>
-      <%=h campagne.descriptif %>
-      <span><a href="/admin/<%= campagne.id %>">[edit]</a></span>  
-    </p>  
-    <p class="meta">Created: <%= campagne.created_at %></p>  
-    
-<% end %>     
+  <section id="campagne">
+  <p> Liste des campagnes</p>
+  <% @campagnes.each do |campagne| %>  
+      <p>  
+        <%=h campagne.id %>
+        <%=h campagne.nom %>
+        <%=h campagne.descriptif %>
+        <span><a href="/admin/<%= campagne.id %>">[edit]</a></span>  
+      </p>  
+      <p class="meta">Created: <%= campagne.created_at %></p>     
+  <% end %>     
+  </section>
 
-</section>
+
+<% if @page=='pays' %>
+  <section id="add">  
+    <form action="/admin/pays" method="post">  
+      <textarea name="pays" placeholder="pays"></textarea>
+      <input type="submit" value="Ajouter Pays!">  
+    </form>  
+  </section>
+<% end %>
+
+  <section id="pays">  
+    <p> Liste des nations</p>
+    <% i=1 %>
+    <% @nations.each do |n| %>  
+      <p>
+        <%= i %> <%=h n.pays %>
+      </p>
+      <% i=i+1 %>
+    <% end %>  
+  </section>

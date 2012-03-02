@@ -9,14 +9,16 @@
   <link href="/rss.xml" rel="alternate" type="application/rss+xml">
 </head>  
 <body>  
-  <header>  
-    <hgroup>  
-      <h1><a href="/"><%= SITE_TITLE %></a></h1>  
-      <h2><%= SITE_DESCRIPTION %></h2>  
-    </hgroup>  
-  </header>  
+  <div class="row">  
+      <div class="column grid_12">
+        <h1><a href="/"><%= SITE_TITLE %></a></h1>  
+        <h2><%= SITE_DESCRIPTION %></h2>
+      </div>
+  </div>  
   
-  <div id="main">
+  
+  <div class="row">
+    <div class="column grid_4">
     <% if flash[:notice] %>
       <p class="notice"><%= flash[:notice] %>
     <% end %>
@@ -24,9 +26,11 @@
     <% if flash[:error] %>
       <p class="error"><%= flash[:error] %>
     <% end %>
+    </div>
+     
+  </div>
     
-    <%= yield %>  
-  </div>  
+  <%= yield %>
   
   <footer>  
     <p><small>Une application pour les <a href="http://forum.autruches.org">Autruches</a>.</small></p>  

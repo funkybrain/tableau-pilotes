@@ -12,12 +12,22 @@ SITE_TITLE = "Le Tableau des Pilotes"
 SITE_DESCRIPTION = "Le QG des campagnes autruchiennes"
 
 
+#### Helper Methods ####
 
-# escape html to avoid XSS attacks
-# this adds the h method from the Rack Utils class
+
 helpers do
-  include Rack::Utils
+  # escape html to avoid XSS attacks
+  # this adds the h method from the Rack Utils class  include Rack::Utils
   alias_method :h, :escape_html
+
+  # initialize helper table Nation
+  def init_nation
+    fr = Nation.first_or_create(:pays => 'France')
+    gr = Nation.first_or_create(:pays => 'Allemagne')
+    us = Nation.first_or_create(:pays => 'Etats Unis')
+    it = Nation.first_or_create(:pays => 'Italie')
+  end
+
 end
 
 
@@ -54,15 +64,46 @@ end
 
 # admin route for campaign manager
 get '/admin' do
-  @campagnes=Campagne.all :order=>:id.desc
   @title='Gestion Campagne'
+  @campagnes=Campagne.all :order=>:id.desc
+  @nations=Nation.all :order=>:pays.asc
+  
   erb :admin
 end
 
-post '/admin' do
-  n=Campagne.new
-  n.nom = params[:nom]
-  n.descriptif = params[:descriptif]
-  n.save
-  redirect '/admin'
+# admin route for campaign manager
+get '/admin/campagne' do
+  @page='campagne'
+  @title='Gestion Campagne'
+  @campagnes=Campagne.all :order=>:id.desc
+  @nations=Nation.all :order=>:pays.asc
+  
+  if @campagnes.empty?
+    flash[:error] = "Aucune campagne accessible"
+  end
+  
+  erb :admin
+end
+
+get '/admin/pays' do
+  @page='pays'
+  @title='Gestion Campagne'
+  @campagnes=Campagne.all :order=>:id.desc
+  @nations=Nation.all :order=>:pays.asc
+  
+  if @nations.empty?
+    flash[:error] = "Liste des Nations vide"
+  end
+  
+  erb :admin
+end
+
+post '/admin/campagne' do
+  n = Campagne.first_or_create(:nom => params[:nom], :descriptif => params[:descriptif]) 
+  redirect '/admin/campagne'
+end
+
+post '/admin/pays' do
+  n = Nation.first_or_create(:pays => params[:pays])
+  redirect '/admin/pays'
 end
