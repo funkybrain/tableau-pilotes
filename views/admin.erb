@@ -1,10 +1,16 @@
 <div id="links">
 <p>
-  Links: <a href="../admin/campagne">campagne</a> <a href="../admin/pays">pays</a>
+  <h2>Liens:</h2>
+  <ul>
+    <li><a href="../admin/campagne">Ajouter une campagne</a>
+    <li><a href="../admin/pays">Ajouter un pays</a>
+  </ul>  
 </p> 
 </div>
+
 <% if @page=='campagne' %>
-  <section id="add">  
+  <section id="add">
+  <h2>Ajouter une campagne</h2>
     <form action="/admin/campagne" method="post">  
       <textarea name="nom" placeholder="titre campagne"></textarea>
       <textarea name="descriptif" placeholder="descriptif campagne"></textarea>
@@ -13,22 +19,9 @@
   </section>
 <% end %>
 
-<section id="campagne">
-<p> Liste des campagnes</p>
-  <% @campagnes.each do |campagne| %>  
-      <p>  
-        <%=h campagne.id %>
-        <%=h campagne.nom %>
-        <%=h campagne.descriptif %>
-        <span><a href="/admin/<%= campagne.id %>">[edit]</a></span>  
-      </p>  
-      <p class="meta">Created: <%= campagne.created_at %></p>     
-  <% end %>     
-</section>
-
-
 <% if @page=='pays' %>
   <section id="add">  
+  <h2>Ajouter une nation</h2>
     <form action="/admin/pays" method="post">  
       <textarea name="pays" placeholder="pays"></textarea>
       <input type="submit" value="Ajouter Pays!">  
@@ -36,13 +29,29 @@
   </section>
 <% end %>
 
-  <section id="pays">  
-    <p> Liste des nations</p>
-    <% i=1 %>
-    <% @nations.each do |n| %>  
-      <p>
-        <%= i %> <%=h n.pays %>
+<section id="campagne">
+<h2> Liste des campagnes</h2>
+  <% i=1 %>
+  <% @campagnes.each do |campagne| %>  
+      <p>  
+        <%= i %>
+        <%=h campagne.nom %>
+        <%=h campagne.descriptif %>
+        <span><a href="/admin/<%= campagne.id %>">[edit]</a></span>  
       </p>
       <% i=i+1 %>
-    <% end %>  
-  </section>
+      <p class="meta">Created: <%= campagne.created_at %></p>     
+  <% end %>     
+</section>
+
+
+<section id="pays">  
+  <h2> Liste des nations</h2>
+  <% i=1 %>
+  <% @nations.each do |n| %>  
+    <p>
+      <%= i %> <%=h n.pays %>
+    </p>
+    <% i=i+1 %>
+  <% end %>  
+</section>

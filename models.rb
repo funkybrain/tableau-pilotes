@@ -27,7 +27,7 @@ class Avatar
   property :statut,     Boolean, :required => true, :default => true
   property :created_at,  DateTime
   
-  belongs_to :autruche
+  belongs_to :autruche #defaults to :required=>true
   
   has n, :flights
   has n, :promotions
@@ -109,6 +109,7 @@ class Flight
   belongs_to :avatar,  :key => true
   belongs_to :mission, :key => true
   has 1, :monture
+  has 1, :role
 end
 
 # Promotion model - defines the join between avatars and grades
@@ -169,6 +170,16 @@ class Monture
   belongs_to :flight
 end
 
+class Role
+  include DataMapper::Resource
+  
+  property :id,   Serial
+  property :type, Text, :required=> true
+  
+  belongs_to :flight
+  
+end
+
 class Nation
   include DataMapper::Resource
   
@@ -194,3 +205,51 @@ DataMapper.auto_upgrade!
 
 # auto migrate destroys and rebuilds schema
 # DataMapper.auto_migrate!
+
+
+# seeding for testing
+class DbSeed
+  def self.seed
+    Autruche.all.destroy
+    
+    easy = Autruche.first_or_create(:nom=>'Tabarly', :prenom=> 'Emmanuel', :callsign=>'Easy')
+    warpig = Autruche.first_or_create(:nom=>'Rio', :prenom=> 'Sebastien', :callsign=>'Warpig')
+    gnou = Autruche.first_or_create(:nom=>'Hauser', :prenom=> 'Jerome', :callsign=>'Gnou')
+    deuxpattes = Autruche.first_or_create(:nom=>'Ruel', :prenom=> 'Gregory', :callsign=>'2Pattes')
+    
+    avatar1 = Avatar.first_or_create(:nom=>'Georges', :prenom=> 'Merritt')
+    easy.avatars << avatar1
+    easy.save
+    
+    avatar2 = Avatar.first_or_create(:nom=>'Jefferson', :prenom=> 'Wood')
+    gnou.avatars << avatar2
+    gnou.save
+    
+    avatar31 = Avatar.first_or_create(:nom=>'Henry', :prenom=> 'Lederer')
+    avatar32 = Avatar.first_or_create(:nom=>'Charles', :prenom=> 'Bergman')
+    warpig.avatars << avatar31    
+    warpig.avatars << avatar32
+    warpig.save
+    
+    avatar4 = Avatar.first_or_create(:nom=>'Wayne', :prenom=> 'Lacroix')
+    deuxpattes.avatars << avatar4
+    deuxpattes.save
+    
+    p47d10 = Monture.first_or_create(:modele=> 'P-47-D-10')
+    p47d22 = Monture.first_or_create(:modele=> 'P-47-D-22')
+    p47d27 = Monture.first_or_create(:modele=> 'P-47-D-27')
+
+    statut1 = StatutFinMission.first_or_create(:statut=> 'Rentre a la base')
+    statut2 = StatutFinMission.first_or_create(:statut=> 'Mort')
+    statut3 = StatutFinMission.first_or_create(:statut=> 'Ejecte (territoire ennemi) Evade')
+    statut4 = StatutFinMission.first_or_create(:statut=> 'Ejecte (territoire ami)')
+    statut5 = StatutFinMission.first_or_create(:statut=> 'Rentre a la base (endommage)')
+
+    role1=Role.first_or_create(:type => 'Ailier')
+    role2=Role.first_or_create(:type => 'Leader de Paire')
+    role3=Role.first_or_create(:type => 'Leader de Groupe')
+
+
+    
+  end
+end

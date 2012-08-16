@@ -1,6 +1,9 @@
 <div id="links">
 <p>
-  Links: <a href="../admin">admin page</a>
+  Links:
+  <ul>
+    <li> <a href="../admin">admin page</a>
+  </ul>
 </p> 
 </div>
 </p>
@@ -20,20 +23,36 @@
 </section>
 
 
-<div class="row">
-  <div class="column grid_1"> </div>
-  <div class="column grid_5">
-    <% @autruches.each do |autruche| %>  
-      <article class="complete">  
-        <p>  
-          <%=h autruche.nom %>
-          <%=h autruche.prenom %>
-          <%=h autruche.callsign %>
-          
-          <span><a href="/<%= autruche.id %>">[edit]</a></span>  
-        </p>  
-        <p class="meta">Created: <%= autruche.created_at %></p>  
-      </article>  
+<table id="hor-minimalist-a" summary="Main Table">
+  <!-- Table header -->
+  <thead>
+    <tr>
+      <th scope="col" id="callsign">Callsign</th>
+      <th scope="col" id="nom">Nom</th>
+      <th scope="col" id="prenom">Prenom</th>
+    </tr>
+  </thead>
+  
+  <!-- Table body -->
+  <tbody>
+    <% @autruches.each do |autruche| %>
+    <tr>
+      <td>
+        <%=h autruche.callsign %>
+      </td>
+      <td>
+        <%=h autruche.nom %>
+      </td>
+      <td>
+        <%=h autruche.prenom %>
+      </td>
+      <td>
+        <span><a href="/<%= autruche.id %>">[edit]</a></span>  
+      </td>
+      <td>
+        <class="meta"><%= autruche.created_at.strftime("Created: %m/%d/%Y") %>
+      </td>  
+    </tr>
     <% end %>
-  </div>  
-</div>
+  </tbody>  
+</table>
