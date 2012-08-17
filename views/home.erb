@@ -1,35 +1,29 @@
 <div id="links">
 <p>
-  Links:
+  Liens:
   <ul>
-    <li> <a href="../admin">admin page</a>
+    <li> <a href="../admin">Administration</a>
+    <li> <a href="../mission">Formulaire mission</a>
   </ul>
 </p> 
 </div>
-</p>
 <p>
-  Pilote
-</p>
-<p></p>
 
-
-<section id="add">  
-  <form action="/" method="post">  
-    <textarea name="nom" placeholder="nom autruche"></textarea>
-    <textarea name="prenom" placeholder="prenom autruche"></textarea>
-    <textarea name="callsign" placeholder="callsign"></textarea>   
-    <input type="submit" value="Ajouter!">  
-  </form>  
-</section>
-
-
+<h2>Tableau General</h2>
 <table id="hor-minimalist-a" summary="Main Table">
   <!-- Table header -->
   <thead>
     <tr>
-      <th scope="col" id="callsign">Callsign</th>
-      <th scope="col" id="nom">Nom</th>
-      <th scope="col" id="prenom">Prenom</th>
+      <th scope="col">Grade</th>
+      <th scope="col">Autruche</th>
+      <th scope="col">Nombre de missions</th>
+      <th scope="col">Dernier avion pilote</th>
+      <th scope="col">Victoires aeriennes</th>
+      <th scope="col">Missions d'attaque</th>
+      <th scope="col">Temps de vol total</th>
+      <th scope="col">Dernier role du pilote</th>
+      <th scope="col">Citations</th>
+      <th scope="col">Medailles</th>     
     </tr>
   </thead>
   
@@ -38,20 +32,35 @@
     <% @autruches.each do |autruche| %>
     <tr>
       <td>
+        Grade
+      </td>
+      <td>
         <%=h autruche.callsign %>
       </td>
       <td>
-        <%=h autruche.nom %>
+        Nbr de missions
       </td>
       <td>
-        <%=h autruche.prenom %>
+        Dernier avion
       </td>
       <td>
-        <span><a href="/<%= autruche.id %>">[edit]</a></span>  
+        Victoires aeriennes  
       </td>
       <td>
-        <class="meta"><%= autruche.created_at.strftime("Created: %m/%d/%Y") %>
-      </td>  
+        Missions attaque
+      </td>
+      <td>
+        Temps de vol
+      </td>
+      <td>
+        Dernier Role
+      </td>
+      <td>
+        Citations
+      </td>
+      <td>
+        Medailles
+      </td>
     </tr>
     <% end %>
   </tbody>  

@@ -4,20 +4,64 @@
   <ul>
     <li><a href="../admin/campagne">Ajouter une campagne</a>
     <li><a href="../admin/pays">Ajouter un pays</a>
+    <li><a href="../admin/autruche">Ajouter une autruche</a>
+    <li><a href="../admin/mission">Ajouter une mission</a>
+    <li><a href="../admin/grade">Ajouter un grade</a>
+    <li><a href="../admin/avatar">Ajouter un avatar</a>
+    
   </ul>  
 </p> 
 </div>
 
 <% if @page=='campagne' %>
-  <section id="add">
-  <h2>Ajouter une campagne</h2>
+
+   <h2>Ajouter une campagne</h2>
     <form action="/admin/campagne" method="post">  
       <textarea name="nom" placeholder="titre campagne"></textarea>
       <textarea name="descriptif" placeholder="descriptif campagne"></textarea>
       <input type="submit" value="Ajouter Campagne!">  
     </form>  
-  </section>
+ 
+
+  <h2> Liste des campagnes</h2>
+  <table id="hor-minimalist-a" summary="Main Table">
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col" id="titre">Titre</th>
+        <th scope="col" id="descriptif">Descriptif</th>
+       </tr>
+    </thead>
+    
+    <!-- Table body -->
+    <tbody>
+    <% i=1 %>
+    <% @campagnes.each do |campagne| %> 
+      <tr>
+        <td>
+          <%= i %>
+        </td>
+        <td>
+          <%=h campagne.nom %>
+        </td>
+        <td>
+          <%=h campagne.descriptif %>
+        </td>
+        <td>
+          <span><a href="/<%= campagne.id %>">[edit]</a></span>  
+        </td>
+        <td>
+          <class="meta"><%= campagne.created_at.strftime("Created: %m/%d/%Y") %>
+        </td>  
+      </tr>
+      <% i=i+1 %>
+      <% end %>
+    </tbody>  
+  </table>
+
 <% end %>
+
 
 <% if @page=='pays' %>
   <section id="add">  
@@ -27,31 +71,280 @@
       <input type="submit" value="Ajouter Pays!">  
     </form>  
   </section>
+  
+  <h2> Liste des nations</h2>
+  <table id="hor-minimalist-a" summary="Main Table">
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col" id="Pays">Pays</th>
+       </tr>
+    </thead>
+    
+    <!-- Table body -->
+    <tbody>
+    <% i=1 %>
+    <% @nations.each do |n| %> 
+      <tr>
+        <td>
+          <%= i %>
+        </td>
+        <td>
+          <%=h n.pays %>
+        </td>
+        <td>
+          <span><a href="/<%= n.id %>">[edit]</a></span>  
+        </td>
+          
+      </tr>
+      <% i=i+1 %>
+      <% end %>
+    </tbody>  
+  </table>
+  
 <% end %>
 
-<section id="campagne">
-<h2> Liste des campagnes</h2>
-  <% i=1 %>
-  <% @campagnes.each do |campagne| %>  
-      <p>  
-        <%= i %>
-        <%=h campagne.nom %>
-        <%=h campagne.descriptif %>
-        <span><a href="/admin/<%= campagne.id %>">[edit]</a></span>  
-      </p>
+<% if @page=='autruche' %>
+  <section id="add">  
+  <h2>Ajouter une autruche</h2>
+    <form action="/admin/autruche" method="post">  
+      <textarea name="callsign" placeholder="callsign"></textarea>
+      <textarea name="prenom" placeholder="prenom"></textarea>
+      <textarea name="nom" placeholder="nom"></textarea>
+
+      <input type="submit" value="Ajouter Autruche!">  
+    </form>  
+  </section>
+
+  <h2> Liste des autruches</h2>
+  <table id="hor-minimalist-a" summary="Main Table">
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col" id="callsign">Callsign</th>
+        <th scope="col" id="prenom">Prenom</th>
+        <th scope="col" id="nom">Nom</th>
+       </tr>
+    </thead>
+    
+    <!-- Table body -->
+    <tbody>
+    <% i=1 %>
+    <% @autruches.each do |autruche| %> 
+      <tr>
+        <td>
+          <%= i %>
+        </td>
+        <td>
+          <%=h autruche.callsign %>
+        </td>
+        <td>
+          <%=h autruche.prenom %>
+        </td>
+        <td>
+          <%=h autruche.nom %>
+        </td>
+        <td>
+          <span><a href="/<%= autruche.id %>">[edit]</a></span>  
+        </td>
+        <td>
+          <class="meta"><%= autruche.created_at.strftime("Created: %m/%d/%Y") %>
+        </td>  
+      </tr>
       <% i=i+1 %>
-      <p class="meta">Created: <%= campagne.created_at %></p>     
-  <% end %>     
-</section>
+      <% end %>
+    </tbody>  
+  </table>
+<% end %>
+
+<!-- ADMIN MISSION -->
+<% if @page=='mission' %>
+
+   <h2>Ajouter une mission</h2>
+    <form action="/admin/mission" method="post">  
+      Choisir une campagne:
+      <select name="choix_campagne">
+        <% @campagnes.each do |c| %>
+          <option value="<%= c.id %>"> <%= c.id %>-<%=h c.nom %> </option>
+        <% end %>
+      </select>
+      <br>
+      <textarea name="numero" placeholder="numero de mission"></textarea>
+      <textarea name="nom" placeholder="nom de la mission"></textarea>
+      
+      <br>
+      <textarea name="briefing" placeholder="briefing"></textarea>
+      <textarea name="debriefing" placeholder="debriefing"></textarea>
+      
+      <input type="submit" value="Ajouter Mission!">  
+    </form>  
+ 
+
+  <h2> Liste des Missions</h2>
+  <table id="hor-minimalist-a" summary="Main Table">
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope-"col">Campagne</th>
+        <th scope="col">Nom</th>
+        <th scope="col">Briefing</th>
+        <th scope="col">De-Briefing</th>
+        
+       </tr>
+    </thead>
+    
+    <!-- Table body -->
+    <tbody>
+    <% i=1 %>
+    <% @missions.each do |mission| %> 
+      <tr>
+        <td>
+          <%= i %>
+        </td>
+        <td>
+          <%=h mission.campagne.nom %>
+        </td>
+        <td>
+          <%=h mission.nom %>
+        </td>
+        <td>
+          <%=h mission.briefing %>
+        </td>
+        <td>
+          <%=h mission.debriefing %>
+        </td>
+        <td>
+          <span><a href="/<%= mission.id %>">[edit]</a></span>  
+        </td>
+        <td>
+          <class="meta"><%= mission.created_at.strftime("Created: %m/%d/%Y") %>
+        </td>  
+      </tr>
+      <% i=i+1 %>
+      <% end %>
+    </tbody>  
+  </table>
+
+<% end %>
 
 
-<section id="pays">  
-  <h2> Liste des nations</h2>
-  <% i=1 %>
-  <% @nations.each do |n| %>  
-    <p>
-      <%= i %> <%=h n.pays %>
-    </p>
-    <% i=i+1 %>
-  <% end %>  
-</section>
+
+<!-- Admin Grade-->
+<% if @page=='grade' %>
+
+   <h2>Ajouter un grade</h2>
+    <form action="/admin/grade" method="post">  
+      Choisir une nation:
+      <select name="choix_nation">
+        <% @nations.each do |n| %>
+          <option value="<%= n.id %>"> <%= n.id %>-<%=h n.pays %> </option>
+        <% end %>
+      </select>
+      <textarea name="nom" placeholder="grade"></textarea>
+      
+      
+      <input type="submit" value="Ajouter Grade!">  
+    </form>  
+ 
+
+  <h2> Liste des Grades</h2>
+  <table id="hor-minimalist-a" summary="Main Table">
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope-"col">Pays</th>
+        <th scope="col">Grade</th>
+        
+       </tr>
+    </thead>
+    
+    <!-- Table body -->
+    <tbody>
+    <% i=1 %>
+    <% @grades.each do |grade| %> 
+      <tr>
+        <td>
+          <%= i %>
+        </td>
+        <td>
+          <%=h grade.nation.pays %>
+        </td>
+        <td>
+          <%=h grade.nom %>
+        </td>
+        <td>
+          <span><a href="/<%= grade.id %>">[edit]</a></span>  
+        </td>
+      </tr>
+      <% i=i+1 %>
+      <% end %>
+    </tbody>  
+  </table>
+
+<% end %>
+
+
+
+<!-- ADMIN AVATAR-->
+<% if @page=='avatar' %>
+
+   <h2>Ajouter un avatar</h2>
+    <form action="/admin/avatar" method="post">  
+      Choisir une autruche:
+      <select name="choix_autruche">
+        <% @autruches.each do |a| %>
+          <option value="<%= a.id %>"> <%= a.id %>-<%=h a.callsign %> </option>
+        <% end %>
+      </select>
+      <textarea name="prenom" placeholder="prenom"></textarea>
+      <textarea name="nom" placeholder="nom"></textarea>
+      
+      
+      <input type="submit" value="Ajouter Avatar!">  
+    </form>  
+ 
+
+  <h2> Liste des Avatars</h2>
+  <table id="hor-minimalist-a" summary="Main Table">
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope-"col">Callsign</th>
+        <th scope="col">Prenom</th>
+        <th scope="col">Nom</th>
+        
+       </tr>
+    </thead>
+    
+    <!-- Table body -->
+    <tbody>
+    <% i=1 %>
+    <% @avatars.each do |avatar| %> 
+      <tr>
+        <td>
+          <%= i %>
+        </td>
+        <td>
+          <%=h avatar.autruche.callsign %>
+        </td>
+        <td>
+          <%=h avatar.prenom %>
+        </td>
+        <td>
+          <%=h avatar.nom %>
+        </td>
+        <td>
+          <span><a href="/<%= avatar.id %>">[edit]</a></span>  
+        </td>
+      </tr>
+      <% i=i+1 %>
+      <% end %>
+    </tbody>  
+  </table>
+
+<% end %>

@@ -1,0 +1,108 @@
+<div id="links">
+<p>
+  <h2>Liens:</h2>
+  <ul>
+    <li><a href="../">Home</a>
+     
+  </ul>  
+</p> 
+</div>
+
+<!-- ADMIN MISSION -->
+
+
+   <h2>Formulaire de mission</h2>
+    <form action="/mission" method="post">  
+      
+      Choisir une mission:
+      <select name="choix_mission">
+        <% @missions.each do |m| %>
+          <option value="<%= m.id %>"> <%= m.id %>-<%=h m.nom %> </option>
+        <% end %>
+      </select>
+      
+      Choisir un avatar:
+      <select name="choix_avatar">
+        <% @avatars.each do |a| %>
+          <option value="<%= a.id %>"> <%= a.id %>-<%=h a.nom %> </option>
+        <% end %>
+      </select>
+      
+      Choisir une monture:
+      <select name="choix_monture">
+        <% @montures.each do |m| %>
+          <option value="<%= m.id %>"> <%= m.id %>-<%=h m.modele %> </option>
+        <% end %>
+      </select>
+      
+      Choisir une role:
+      <select name="choix_role">
+        <% @roles.each do |r| %>
+          <option value="<%= r.id %>"> <%= r.id %>-<%=h r.type %> </option>
+        <% end %>
+      </select>
+
+      Choisir une statut:
+      <select name="choix_statut">
+        <% @statuts.each do |s| %>
+          <option value="<%= s.id %>"> <%= s.id %>-<%=h s.statut %> </option>
+        <% end %>
+      </select>
+      
+      <input type="submit" value="Soumettre Formulaire!">  
+    </form>  
+ 
+
+  <h2> Liste des Missions</h2>
+  <table id="hor-minimalist-a" summary="Main Table">
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Campagne</th>
+        <th scope-"col">Mission</th>
+        <th scope="col">Avatar</th>
+        <th scope="col">Monture</th>
+        <th scope="col">Role</th>
+        <th scope="col">Statut</th>
+        
+       </tr>
+    </thead>
+    
+    <!-- Table body -->
+    <tbody>
+    <% i=1 %>
+    <% @flights.each do |flight| %> 
+      <tr>
+        <td>
+          <%= i %>
+        </td>
+        <td>
+          <%=h flight.mission.campagne.nom %>
+        </td>
+        <td>
+          <%=h flight.mission.numero %>
+        </td>
+        <td>
+          <%=h flight.avatar.prenom %>
+        </td>
+        <td>
+          <%=h flight.monture.modele %>
+        </td>
+        <td>
+          <%=h flight.role.type %>
+        </td>
+        <td>
+          <%=h flight.statutfinmission.statut %>
+        </td>
+        <td>
+          <span><a href="/<%= flight.avatar.id %>/<%= flight.mission.id %>">[edit]</a></span>  
+        </td>
+        <td>
+          <class="meta"><%= flight.created_at.strftime("Created: %m/%d/%Y") %>
+        </td>  
+      </tr>
+      <% i=i+1 %>
+      <% end %>
+    </tbody>  
+  </table>

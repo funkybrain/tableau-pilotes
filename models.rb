@@ -49,6 +49,7 @@ class Campagne
   property :created_at, DateTime
 
   has n, :missions
+  
 end
 
 # Mission model - liste des missions
@@ -60,7 +61,7 @@ class Mission
   property :nom,        String,  :required => true
   property :briefing,   Text,    :required => false, :default => "Pas de briefing"
   property :debriefing, Text,    :required => false, :default => "Pas de debriefing"
-  property :date_hist,  DateTime,:required => false
+  #property :date_hist,  DateTime,:required => false
   property :created_at,  DateTime
   
   belongs_to :campagne
@@ -80,6 +81,7 @@ class Decoration
   
   has n, :rewards
   has n, :avatars, :through => :rewards
+  
 end
 
 class Grade
@@ -92,6 +94,7 @@ class Grade
   
   has n, :promotions
   has n, :avatars, :through =>:promotions
+  
 end
 
 ###################
@@ -101,6 +104,7 @@ end
 # Flight model - defines the join between avatars and missions
 # use it to store meta-data about when an avatar went on a mission
 class Flight
+  
   include DataMapper::Resource
   
   property :created_at,  DateTime
@@ -108,8 +112,11 @@ class Flight
   
   belongs_to :avatar,  :key => true
   belongs_to :mission, :key => true
-  has 1, :monture
-  has 1, :role
+  
+  belongs_to :role
+  belongs_to :statutfinmission
+  belongs_to :monture
+  
 end
 
 # Promotion model - defines the join between avatars and grades
@@ -124,7 +131,7 @@ class Promotion
   belongs_to :avatar, :key => true
   belongs_to :grade,  :key => true
   
-  has 1, :mission
+  #has 1, :mission
 end
 
 # Reward model - defines the join between avatars and decorations
@@ -139,35 +146,56 @@ class Reward
   belongs_to :avatar,     :key => true
   belongs_to :decoration, :key => true
   
-  has 1, :mission
+  #has 1, :mission
 end
 
 #####################
 ### HELPER MODELS ###
 #####################
 
-class StatutFinMission
+class Statutfinmission
   include DataMapper::Resource
   property :id,     Serial
-  property :statut, Text, :required => true  
+  property :statut, Text, :required => true
+  
+  has n, :flights
+  
 end
 
 class Revendication
+  
   include DataMapper::Resource
   property :id,          Serial
   property :descriptif , Text, :required => true
+  
+end
+
+class Nation
+  
+  include DataMapper::Resource
+  
+  property :id,        Serial
+  property :pays,      Text, :required => true
+  
+  has n, :montures
+  has n, :decorations
+  has n, :grades
+  
 end
 
 class Monture
+  
   include DataMapper::Resource
   
   property :id,          Serial
   property :modele,      Text, :required => true
   #property :image,       Binary
-  property :specialite,  Integer
+  property :specialite,  Integer, :required => false
   
-  belongs_to :nation
-  belongs_to :flight
+  belongs_to :nation, :required => false
+
+  has n, :flights
+  
 end
 
 class Role
@@ -176,23 +204,9 @@ class Role
   property :id,   Serial
   property :type, Text, :required=> true
   
-  belongs_to :flight
+  has n, :flights
   
 end
-
-class Nation
-  include DataMapper::Resource
-  
-  property :id,        Serial
-  property :pays,      Text, :required => true
-  
-  has n, :monture
-  has n, :decoration
-  has n, :grade
-end
-
-
-
 
 
 
@@ -210,8 +224,15 @@ DataMapper.auto_upgrade!
 # seeding for testing
 class DbSeed
   def self.seed
-    Autruche.all.destroy
-    
+
+  # initialize table Nation
+  
+    fr = Nation.first_or_create(:pays => 'France')
+    gr = Nation.first_or_create(:pays => 'Allemagne')
+    us = Nation.first_or_create(:pays => 'Etats Unis')
+    it = Nation.first_or_create(:pays => 'Italie')
+        
+  # initialize pilots  
     easy = Autruche.first_or_create(:nom=>'Tabarly', :prenom=> 'Emmanuel', :callsign=>'Easy')
     warpig = Autruche.first_or_create(:nom=>'Rio', :prenom=> 'Sebastien', :callsign=>'Warpig')
     gnou = Autruche.first_or_create(:nom=>'Hauser', :prenom=> 'Jerome', :callsign=>'Gnou')
@@ -235,21 +256,43 @@ class DbSeed
     deuxpattes.avatars << avatar4
     deuxpattes.save
     
-    p47d10 = Monture.first_or_create(:modele=> 'P-47-D-10')
-    p47d22 = Monture.first_or_create(:modele=> 'P-47-D-22')
-    p47d27 = Monture.first_or_create(:modele=> 'P-47-D-27')
+# seed planes
 
-    statut1 = StatutFinMission.first_or_create(:statut=> 'Rentre a la base')
-    statut2 = StatutFinMission.first_or_create(:statut=> 'Mort')
-    statut3 = StatutFinMission.first_or_create(:statut=> 'Ejecte (territoire ennemi) Evade')
-    statut4 = StatutFinMission.first_or_create(:statut=> 'Ejecte (territoire ami)')
-    statut5 = StatutFinMission.first_or_create(:statut=> 'Rentre a la base (endommage)')
+    t = Nation.first(:pays => 'Etats Unis')
+    
+    p47d10 = Monture.first_or_create(:modele=> 'P-47-D-10', :nation_id => t.id)
+    p47d22 = Monture.first_or_create(:modele=> 'P-47-D-22', :nation_id => t.id)
+    p47d27 = Monture.first_or_create(:modele=> 'P-47-D-27', :nation_id => t.id)
+
+    t.save
+    
+# seed statut fin mission
+
+    statut1 = Statutfinmission.first_or_create(:statut=> 'Rentre a la base')
+    statut2 = Statutfinmission.first_or_create(:statut=> 'Mort')
+    statut3 = Statutfinmission.first_or_create(:statut=> 'Ejecte (territoire ennemi) Evade')
+    statut4 = Statutfinmission.first_or_create(:statut=> 'Ejecte (territoire ami)')
+    statut5 = Statutfinmission.first_or_create(:statut=> 'Rentre a la base (endommage)')
+
+# seed roles
 
     role1=Role.first_or_create(:type => 'Ailier')
     role2=Role.first_or_create(:type => 'Leader de Paire')
     role3=Role.first_or_create(:type => 'Leader de Groupe')
 
 
+# seed mission
+    camp = Campagne.first(:nom => 'Campagne Rouge')
+    miss = Mission.first_or_create(:numero => 5,
+                                  :nom => 'La Belle Rouge',
+                                  :briefing => 'Longue vie aux Bolcheviks',
+                                  :debriefing => 'Ah ben en fait ca cest plutot mal passe',
+                                  :campagne_id => camp.id
+                                  )
+    puts miss.inspect   
+    camp.save
+    
+  
     
   end
 end

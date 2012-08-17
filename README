@@ -4,3 +4,5 @@ LOL du jour:
 Notes:
 - DM associations can be tricky. Use belongs_to when you want to put a foreign key in a table
 e.g. in Grade table -  'belongs_to :nation' will add an 'id_nation' f key in the Grade table. That's counter(my)intuition :/
+- Table 1 has n Table 2 will create a Table1.id fk in Table 2
+- Don't forget to plurialize one-to-many associations, e.g. has n, :grades and NOT grade
