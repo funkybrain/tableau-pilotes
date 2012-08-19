@@ -3,6 +3,9 @@
 # To pull db from heroku heroku db:pull postgres://localhost/project.db
 DataMapper::setup(:default, ENV['DATABASE_URL'] || "postgres://localhost/autruche.db")
 
+# exception handling
+DataMapper::Model.raise_on_save_failure = true
+
 # define Autruche model - liste des pilotes
 class Autruche
 # insures model persistence  
@@ -107,6 +110,7 @@ class Flight
   
   include DataMapper::Resource
   
+  property :temps_vol,   Time, :required => false, :default => "00:00"
   property :created_at,  DateTime
   property :updated_at,  DateTime
   
@@ -165,8 +169,18 @@ end
 class Revendication
   
   include DataMapper::Resource
+  
   property :id,          Serial
   property :descriptif , Text, :required => true
+  
+end
+
+class Victoire
+  
+  include DataMapper::Resource
+  
+  property :id,          Serial
+  property :type , Text, :required => true
   
 end
 
@@ -268,11 +282,14 @@ class DbSeed
     
 # seed statut fin mission
 
-    statut1 = Statutfinmission.first_or_create(:statut=> 'Rentre a la base')
-    statut2 = Statutfinmission.first_or_create(:statut=> 'Mort')
-    statut3 = Statutfinmission.first_or_create(:statut=> 'Ejecte (territoire ennemi) Evade')
-    statut4 = Statutfinmission.first_or_create(:statut=> 'Ejecte (territoire ami)')
-    statut5 = Statutfinmission.first_or_create(:statut=> 'Rentre a la base (endommage)')
+    statut1 = Statutfinmission.first_or_create(:statut=> 'Pose sur une base (intact)')
+    statut2 = Statutfinmission.first_or_create(:statut=> 'Pose sur une base (endommage)')
+    statut3 = Statutfinmission.first_or_create(:statut=> 'Pose en territoire ami (intact)')
+    statut4 = Statutfinmission.first_or_create(:statut=> 'Pose en territoire ami (endommage)')
+    statut5 = Statutfinmission.first_or_create(:statut=> 'Pose en territoire enemi (campagne)')
+    statut6 = Statutfinmission.first_or_create(:statut=> 'Ejecte (territoire ennemi)')
+    statut7 = Statutfinmission.first_or_create(:statut=> 'Ejecte (territoire ami)')
+    statut8 = Statutfinmission.first_or_create(:statut=> 'Mort')
 
 # seed roles
 
@@ -291,8 +308,18 @@ class DbSeed
                                   )
     puts miss.inspect   
     camp.save
-    
-  
+
+# seed revendications
+    rev1 = Revendication.first_or_create(:descriptif => "Victoire Aerienne") 
+    rev2 = Revendication.first_or_create(:descriptif => "Attaque au sol") 
+    rev3 = Revendication.first_or_create(:descriptif => "Attaque de navire") 
+    rev4 = Revendication.first_or_create(:descriptif => "Straffing secondaire") 
+
+# seed victoires
+    vic1 = Victoire.first_or_create(:type => "Confirmee")
+    vic2 = Victoire.first_or_create(:type => "Partagee")
+    vic1 = Victoire.first_or_create(:type => "Probable")
+    vic1 = Victoire.first_or_create(:type => "Endommagee")
     
   end
 end

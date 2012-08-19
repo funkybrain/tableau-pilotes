@@ -8,49 +8,103 @@
 </p> 
 </div>
 
+<h2>Infos</h2>
+
+<div id="info">
+Remplissez le formulaire avec attention. N'oubliez pas, vous pouvez apporter une description plus pr&eacute;cise
+pour chaque revendication. Il est inutile de s&eacute;lectionner la liste "confirm&eacute;e", "probable"
+etc si la revendication n'est pas une victoire a&eacute;rienne.
+</div>
+
+<h2>Formulaire de mission</h2>
+
 <!-- ADMIN MISSION -->
 
-
-   <h2>Formulaire de mission</h2>
-    <form action="/mission" method="post">  
-      
-      Choisir une mission:
-      <select name="choix_mission">
+  <form class="cmxform" action="/mission" method="post">  
+  <fieldset>
+    <legend>Formulaire mission</legend>
+    <ol>
+      <li>
+        <label> Mission: </label>
+        <select name="choix_mission">
         <% @missions.each do |m| %>
-          <option value="<%= m.id %>"> <%= m.id %>-<%=h m.nom %> </option>
+          <option value="<%= m.id %>"> <%= m.numero %>-<%=h m.nom %> </option>
         <% end %>
-      </select>
-      
-      Choisir un avatar:
-      <select name="choix_avatar">
+        </select>
+      </li>
+      <li>
+        <label> Choisir un avatar: </label>
+        <select name="choix_avatar">
         <% @avatars.each do |a| %>
-          <option value="<%= a.id %>"> <%= a.id %>-<%=h a.nom %> </option>
+          <option value="<%= a.id %>"> <%=h a.nom %> <%=h a.prenom %></option>
         <% end %>
-      </select>
-      
-      Choisir une monture:
-      <select name="choix_monture">
+        </select>
+      note: champ temporaire, choix avatar sera automatis&eacute; avec login autruche
+      </li>
+      <li>    
+        <label> Avion pilot&eacute;: </label>
+        <select name="choix_monture">
         <% @montures.each do |m| %>
-          <option value="<%= m.id %>"> <%= m.id %>-<%=h m.modele %> </option>
+          <option value="<%= m.id %>"> <%=h m.modele %> </option>
         <% end %>
-      </select>
-      
-      Choisir une role:
-      <select name="choix_role">
+        </select>
+      </li>
+      <li>
+        <label> R&ocirc;le (initial) du pilote: </label>
+        <select name="choix_role">
         <% @roles.each do |r| %>
-          <option value="<%= r.id %>"> <%= r.id %>-<%=h r.type %> </option>
+          <option value="<%= r.id %>"> <%=h r.type %> </option>
         <% end %>
-      </select>
-
-      Choisir une statut:
-      <select name="choix_statut">
+        </select>
+      </li>
+      <li>
+        <label> Temps de vol (hh:mm): </label>
+        <input type="text" name="temps_vol" placeholder="hh:mm" />
+      </li>
+      <li>
+        <label> Statut en fin de mission: </label>
+        <select name="choix_statut">
         <% @statuts.each do |s| %>
-          <option value="<%= s.id %>"> <%= s.id %>-<%=h s.statut %> </option>
+          <option value="<%= s.id %>"> <%=h s.statut %> </option>
         <% end %>
-      </select>
+        </select>
+      </li>
+      <li>
+        <label>Revendication #1:</label>
+        <select name="revendic_1">
+        <% @revendications.each do |r| %>
+          <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
+        <% end %>
+        </select>
+        <input class="revendication" type="text" name="info_1" placeholder="infos complementaires"/>
+        <select name="vic_1">
+        <% @victoires.each do |v| %>
+          <option value="<%= v.id %>"> <%=h v.type %> </option>
+        <% end %>
+        </select>
+      </li>  
+      <li>
+        <label>Revendication #2:</label>
+        <select name="revendic_2">
+        <% @revendications.each do |r| %>
+          <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
+        <% end %>
+        </select>
+        <input class="revendication" type="text" name="info_2" placeholder="infos complementaires"/>
+        <select name="vic_2">
+        <% @victoires.each do |v| %>
+          <option value="<%= v.id %>"> <%=h v.type %> </option>
+        <% end %>
+        </select>
+      </li>        
       
-      <input type="submit" value="Soumettre Formulaire!">  
-    </form>  
+      <li>
+          <input type="submit" value="Soumettre Formulaire!">
+      </li>    
+    </ol>
+  </fieldset>  
+  
+</form>  
  
 
   <h2> Liste des Missions</h2>
@@ -81,10 +135,10 @@
           <%=h flight.mission.campagne.nom %>
         </td>
         <td>
-          <%=h flight.mission.numero %>
+          <%=h flight.mission.nom %>
         </td>
         <td>
-          <%=h flight.avatar.prenom %>
+          <%=h flight.avatar.prenom %> <%=h flight.avatar.nom %>
         </td>
         <td>
           <%=h flight.monture.modele %>

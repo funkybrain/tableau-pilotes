@@ -132,12 +132,14 @@ get '/mission' do
   @page='xxx'
   @title='xxx'
   
-  @missions=Mission.all :order=>:id.asc
-  @avatars=Avatar.all :order=>:id.asc
-  @montures=Monture.all :order=>:id.asc
-  @roles=Role.all :order=>:id.asc
-  @flights=Flight.all :order=>:created_at.asc
-  @statuts=Statutfinmission.all :order=>:id.asc
+  @missions = Mission.all :order=>:id.asc
+  @avatars = Avatar.all :order=>:id.asc
+  @montures = Monture.all :order=>:id.asc
+  @roles = Role.all :order=>:id.asc
+  @flights = Flight.all :order=>:created_at.asc
+  @statuts = Statutfinmission.all :order=>:id.asc
+  @revendications = Revendication.all  :order=>:id.asc
+  @victoires = Victoire.all :order=>:id.asc
   
   if @flights.empty?
     flash[:error] = "Liste des missions vide"
@@ -218,26 +220,33 @@ post '/admin/avatar' do
 end
 
 post '/mission' do
-    mission = Mission.get(params[:choix_mission])
-    avatar = Avatar.get(params[:choix_avatar])
-    monture = Monture.get(params[:choix_monture])
-    role = Role.get(params[:choix_role])
-    statut = Statutfinmission.get(params[:choix_statut])
-    
-    flight = Flight.first_or_create(:avatar_id => avatar.id,
-                                    :mission_id => mission.id,
-                                    :monture_id => monture.id,
-                                    :role_id => role.id,
-                                    :statutfinmission_id => statut.id)
-    #flight.monture << monture
-    #flight.role << role
-    
-    #mission.flights << flight
-    #mission.save
-    #avatar.flights << flight
-    #avatar.save
-    
-    #flight.save
-    redirect '/mission'
+
+  if params[:temps_vol] == ""
+      flight = Flight.first_or_create({:avatar_id => params[:choix_avatar],
+                                   :mission_id => params[:choix_mission]
+                                   },
+                                  {:monture_id => params[:choix_monture],
+                                   :role_id => params[:choix_role],
+                                   :statutfinmission_id => params[:choix_statut]
+                                   })
+  else
+      flight = Flight.first_or_create({:avatar_id => params[:choix_avatar],
+                                   :mission_id => params[:choix_mission]
+                                   },
+                                  {:monture_id => params[:choix_monture],
+                                   :role_id => params[:choix_role],
+                                   :temps_vol => params[:temps_vol],
+                                   :statutfinmission_id => params[:choix_statut]
+                                   })    
+  end
+
+
+#  if flight
+#    flash[:error] = "Mission deja remplie"
+#  end
+  puts flight.inspect
+  puts flight.saved?
+  
+  redirect '/mission'
   
 end
