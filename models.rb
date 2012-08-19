@@ -110,6 +110,7 @@ class Flight
   
   include DataMapper::Resource
   
+  property :id,          Serial
   property :temps_vol,   Time, :required => false, :default => "00:00"
   property :created_at,  DateTime
   property :updated_at,  DateTime
@@ -120,6 +121,23 @@ class Flight
   belongs_to :role
   belongs_to :statutfinmission
   belongs_to :monture
+  
+  has n, :flight_results
+  
+  
+end
+
+class FlightResult
+  
+  include DataMapper::Resource
+  
+  property :id,           Serial
+  property :commentaire,  Text, :required => false
+  property :created_at,   DateTime
+  
+  belongs_to :revendication
+  belongs_to :victoire
+  belongs_to :flight
   
 end
 
@@ -173,6 +191,8 @@ class Revendication
   property :id,          Serial
   property :descriptif , Text, :required => true
   
+  has n, :flight_results
+  
 end
 
 class Victoire
@@ -181,6 +201,8 @@ class Victoire
   
   property :id,          Serial
   property :type , Text, :required => true
+
+  has n, :flight_results
   
 end
 

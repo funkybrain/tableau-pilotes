@@ -1,16 +1,23 @@
 Change Log:
 ----------
 19/08/12
-
+> Formulaire des pilotes complet et ˆ peu prs fonctionel (une seule revendication pour l'instant)
+> une soupon de mise en forme pour rendre la lecture pus facile
 
 
 To Do:
 -----
+> fix horrible hack on the temps_vol db submission
+> tighten requirements on Model fields once it is clear what is/isn't absolutely required
+> validate (regex) all text input fields
+> figure out why I can't just use flight_id PK in FlightResults, instead of all of Flight CK...
+> find eloquent way to add revendications dynamically
 
 Dev Notes:
 ---------
 > DM associations can be tricky. Use belongs_to when you want to put a foreign key in a table
 e.g. in Grade table -  'belongs_to :nation' will add an 'id_nation' f key in the Grade table. That's counter(my)intuition :/
-> Table 1 has n Table 2 will create a Table1.id fk in Table 2
+> Table_1 has n Table_2 will create a Table_1.id fk in Table 2
 > Don't forget to plurialize one-to-many associations, e.g. has n, :grades and NOT grade
 > datamapper tried to plurialize 'Sortie' as 'Sorty' and not 'Sorties', hence the clusterfuck.
+> use underscore to plurialize models with camel case: FlightResult => :flight_results

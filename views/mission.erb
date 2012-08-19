@@ -84,13 +84,13 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
         </select>
       </li>  
       <li>
-        <label>Revendication #2:</label>
+        <label style="color: grey">Revendication #2:</label>
         <select name="revendic_2">
         <% @revendications.each do |r| %>
           <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
         <% end %>
         </select>
-        <input class="revendication" type="text" name="info_2" placeholder="infos complementaires"/>
+        <input class="revendication" type="text" name="info_2" placeholder="!! cette ligne pas encore prise en compte!!"/>
         <select name="vic_2">
         <% @victoires.each do |v| %>
           <option value="<%= v.id %>"> <%=h v.type %> </option>

@@ -239,7 +239,17 @@ post '/mission' do
                                    :statutfinmission_id => params[:choix_statut]
                                    })    
   end
-
+  
+  # save flight results
+   result_1 = FlightResult.new(:flight_id => flight.id,
+                               :revendication_id => params[:revendic_1],
+                               :victoire_id => params[:revendic_1],
+                               :commentaire => params[:info_1],
+                               :flight_avatar_id => params[:choix_avatar],
+                               :flight_mission_id => params[:choix_mission]
+                                )
+   puts result_1.inspect
+   result_1.save
 
 #  if flight
 #    flash[:error] = "Mission deja remplie"
