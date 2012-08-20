@@ -34,11 +34,10 @@ class Avatar
   
   has n, :flights
   has n, :promotions
-  has n, :rewards
+
   
   has n, :missions,    :through => :flights
   has n, :grades,      :through => :promotions
-  has n, :decorations, :through => :rewards
  
 end
 
@@ -74,8 +73,15 @@ class Mission
  
 end
 
+# Table: Decoration
+# Liste des diverses mdailles et citations attribuables aux avatars/pilotes
+# ####################
+# id | nom | nation_id
+# ####################
+
 class Decoration
   include DataMapper::Resource
+  
   property :id,       Serial
   property :nom,      Text, :required => true
   #property :image,    Binary
@@ -83,9 +89,32 @@ class Decoration
   belongs_to :nation
   
   has n, :rewards
-  has n, :avatars, :through => :rewards
+#  has n, :avatars, :through => :rewards
   
 end
+
+# Table: Reward
+# enregistre l'attribution de mdailles et citations pour chaque pilote
+# #################################################
+# id | id_flight | id_decoration
+# #################################################
+
+class Reward
+  include DataMapper::Resource
+  
+  property :id,          Serial
+  property :created_at,  DateTime
+  property :updated_at,  DateTime
+  
+  belongs_to :flight
+  belongs_to :decoration
+  
+  def self.byFlight(id)
+    all(Reward.flight.id => id)
+  end
+
+end
+
 
 class Grade
   include DataMapper::Resource
@@ -100,16 +129,17 @@ class Grade
   
 end
 
-###################
-### JOIN TABLES ###
-###################
-
-# Flight model - defines the join between avatars and missions
+# Table: Flight
 # use it to store meta-data about when an avatar went on a mission
+# ##########################################################################
+# id | temps_vol | id_avatar | id_mission | id_role | id_statut | id_monture
+# ##########################################################################
+
 class Flight
   
   include DataMapper::Resource
   
+  # define properies and keys
   property :id,          Serial
   property :temps_vol,   Time, :required => false, :default => "00:00"
   property :created_at,  DateTime
@@ -123,9 +153,27 @@ class Flight
   belongs_to :monture
   
   has n, :flight_results
+  has n, :rewards
   
+  # define commonly used scopes as methods to call them from anywhere
+#  def self.avatar(id)
+#    all(:avatar_id => id)
+#  end
+  # call it with Flight.avatar(id)
+  # remember that you ca chain these methods for more complex queries
+  
+  def self.byAutruche(id)
+    #autruche = {:avatar_id => {:autruche_id => id}}
+    #autruche = {Flight.avatar.autruche.id => id}
+    #puts autruche
+    #autruche = {:avatar_id => 72}
+    all(Flight.avatar.autruche.id => id)
+  end
   
 end
+
+# FlightResult - stores the revendication/victoire pair submitted in formulaire pilote
+# for each Flight (i.e. for each avatar/mission pair)
 
 class FlightResult
   
@@ -156,25 +204,12 @@ class Promotion
   #has 1, :mission
 end
 
-# Reward model - defines the join between avatars and decorations
-# use it to store meta-data about when an avatar gets a decoration
-class Reward
-  include DataMapper::Resource
-  
-  property :date_decoration, DateTime
-  property :created_at,  DateTime
-  property :updated_at,  DateTime
-  
-  belongs_to :avatar,     :key => true
-  belongs_to :decoration, :key => true
-  
-  #has 1, :mission
-end
 
 #####################
 ### HELPER MODELS ###
 #####################
 
+# Etat du pilote renseign en fin de mission; e.g. Eject
 class Statutfinmission
   include DataMapper::Resource
   property :id,     Serial
@@ -184,6 +219,7 @@ class Statutfinmission
   
 end
 
+# Type de revendication renseigne dans le formulaire mission, e.g. Attaque au sol
 class Revendication
   
   include DataMapper::Resource
@@ -195,6 +231,7 @@ class Revendication
   
 end
 
+# Type de victoire renseige dans le formulaire mission, e.g. Probable
 class Victoire
   
   include DataMapper::Resource
@@ -206,6 +243,7 @@ class Victoire
   
 end
 
+# Liste des pays associs aux avions, dcorations et grades
 class Nation
   
   include DataMapper::Resource
@@ -219,6 +257,7 @@ class Nation
   
 end
 
+# Liste des Avion et provenance (pays)
 class Monture
   
   include DataMapper::Resource
@@ -234,6 +273,7 @@ class Monture
   
 end
 
+# Role tenu dans une mission, e.g. Ailier
 class Role
   include DataMapper::Resource
   
@@ -255,93 +295,3 @@ DataMapper.auto_upgrade!
 
 # auto migrate destroys and rebuilds schema
 # DataMapper.auto_migrate!
-
-
-# seeding for testing
-class DbSeed
-  def self.seed
-
-  # initialize table Nation
-  
-    fr = Nation.first_or_create(:pays => 'France')
-    gr = Nation.first_or_create(:pays => 'Allemagne')
-    us = Nation.first_or_create(:pays => 'Etats Unis')
-    it = Nation.first_or_create(:pays => 'Italie')
-        
-  # initialize pilots  
-    easy = Autruche.first_or_create(:nom=>'Tabarly', :prenom=> 'Emmanuel', :callsign=>'Easy')
-    warpig = Autruche.first_or_create(:nom=>'Rio', :prenom=> 'Sebastien', :callsign=>'Warpig')
-    gnou = Autruche.first_or_create(:nom=>'Hauser', :prenom=> 'Jerome', :callsign=>'Gnou')
-    deuxpattes = Autruche.first_or_create(:nom=>'Ruel', :prenom=> 'Gregory', :callsign=>'2Pattes')
-    
-    avatar1 = Avatar.first_or_create(:nom=>'Georges', :prenom=> 'Merritt')
-    easy.avatars << avatar1
-    easy.save
-    
-    avatar2 = Avatar.first_or_create(:nom=>'Jefferson', :prenom=> 'Wood')
-    gnou.avatars << avatar2
-    gnou.save
-    
-    avatar31 = Avatar.first_or_create(:nom=>'Henry', :prenom=> 'Lederer')
-    avatar32 = Avatar.first_or_create(:nom=>'Charles', :prenom=> 'Bergman')
-    warpig.avatars << avatar31    
-    warpig.avatars << avatar32
-    warpig.save
-    
-    avatar4 = Avatar.first_or_create(:nom=>'Wayne', :prenom=> 'Lacroix')
-    deuxpattes.avatars << avatar4
-    deuxpattes.save
-    
-# seed planes
-
-    t = Nation.first(:pays => 'Etats Unis')
-    
-    p47d10 = Monture.first_or_create(:modele=> 'P-47-D-10', :nation_id => t.id)
-    p47d22 = Monture.first_or_create(:modele=> 'P-47-D-22', :nation_id => t.id)
-    p47d27 = Monture.first_or_create(:modele=> 'P-47-D-27', :nation_id => t.id)
-
-    t.save
-    
-# seed statut fin mission
-
-    statut1 = Statutfinmission.first_or_create(:statut=> 'Pose sur une base (intact)')
-    statut2 = Statutfinmission.first_or_create(:statut=> 'Pose sur une base (endommage)')
-    statut3 = Statutfinmission.first_or_create(:statut=> 'Pose en territoire ami (intact)')
-    statut4 = Statutfinmission.first_or_create(:statut=> 'Pose en territoire ami (endommage)')
-    statut5 = Statutfinmission.first_or_create(:statut=> 'Pose en territoire enemi (campagne)')
-    statut6 = Statutfinmission.first_or_create(:statut=> 'Ejecte (territoire ennemi)')
-    statut7 = Statutfinmission.first_or_create(:statut=> 'Ejecte (territoire ami)')
-    statut8 = Statutfinmission.first_or_create(:statut=> 'Mort')
-
-# seed roles
-
-    role1=Role.first_or_create(:type => 'Ailier')
-    role2=Role.first_or_create(:type => 'Leader de Paire')
-    role3=Role.first_or_create(:type => 'Leader de Groupe')
-
-
-# seed mission
-    camp = Campagne.first(:nom => 'Campagne Rouge')
-    miss = Mission.first_or_create(:numero => 5,
-                                  :nom => 'La Belle Rouge',
-                                  :briefing => 'Longue vie aux Bolcheviks',
-                                  :debriefing => 'Ah ben en fait ca cest plutot mal passe',
-                                  :campagne_id => camp.id
-                                  )
-    puts miss.inspect   
-    camp.save
-
-# seed revendications
-    rev1 = Revendication.first_or_create(:descriptif => "Victoire Aerienne") 
-    rev2 = Revendication.first_or_create(:descriptif => "Attaque au sol") 
-    rev3 = Revendication.first_or_create(:descriptif => "Attaque de navire") 
-    rev4 = Revendication.first_or_create(:descriptif => "Straffing secondaire") 
-
-# seed victoires
-    vic1 = Victoire.first_or_create(:type => "Confirmee")
-    vic2 = Victoire.first_or_create(:type => "Partagee")
-    vic1 = Victoire.first_or_create(:type => "Probable")
-    vic1 = Victoire.first_or_create(:type => "Endommagee")
-    
-  end
-end

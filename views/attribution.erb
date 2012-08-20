@@ -1,0 +1,72 @@
+<a href='../admin/attribution'> Retour au choix pilote </a>
+
+<h2> Choisir la mission et la recompense </h2>
+  <form action="/admin/attribution/<%= @id %>" method="post">
+    <select name="choix_flight">
+    <% @flights.each do |f| %>
+        <option value="<%= f.id %>"> #<%=h f.mission.numero %>: <%=h f.mission.nom %> </option>
+      <% end %>
+    </select>
+    <select name="choix_decoration">
+      <% @decorations.each do |d| %>
+        <option value="<%= d.id %>"> <%=h d.nom %> </option>
+      <% end %>
+    </select>    
+    <input type="submit" value="Go!"/>
+
+  <h3> Liste des Avatars et Mission de:<em style="color: red"> <%=h @autruche.callsign %> </em> </h3>
+  
+  <table id="hor-minimalist-a" summary="Main Table">
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th scope="col">Prenom Avatar</th>
+        <th scope-"col">Nom Avatar</th>
+        <th scope="col">Campagne</th>
+        <th scope="col"># Mission</th>
+        <th scope="col">Nom Mission</th>
+        <th scope="col">Statut</th>
+        <th scope="col">Decorations</th>
+        
+       </tr>
+    </thead>
+    
+    <!-- Table body -->
+    <tbody>
+    
+    <% @flights.each do |f| %> 
+      <tr>
+        <td>
+          <%=h f.avatar.prenom %>   
+        </td>
+        <td>
+          <%=h f.avatar.nom %>
+        </td>
+        <td>
+          <%=h f.mission.campagne.nom %>
+        </td>
+        <td>
+          <%=h f.mission.numero %>
+        </td>
+        <td>
+          <%=h f.mission.nom %>
+        </td>
+        <td>
+          <%=h f.statutfinmission.statut %>
+        </td>
+        <td>
+          <% if Reward.byFlight(f.id) %>
+              <% Reward.byFlight(f.id).each do |reward| %>
+                <%=h Decoration.get(reward.decoration_id).nom %>
+              <% end %>
+          <% end %>            
+        </td>
+        
+        <td>
+          <span><a href="/<%= f.avatar.id %>/<%= f.mission.id %>">[edit]</a></span>  
+        </td>        
+      </tr>
+    <% end %>
+      
+    </tbody>  
+  </table>

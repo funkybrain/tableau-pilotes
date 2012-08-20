@@ -2,8 +2,9 @@ require 'sinatra'
 require 'data_mapper'
 require 'sinatra/flash'
 
-# include sub-files neede for main app
+# include sub-files needed for main app
 require './models.rb'
+require './seed.rb'
 
 enable :sessions
 
@@ -47,7 +48,7 @@ post '/' do
   n.callsign = params[:callsign]
 
   if n.save
-    flash[:notice] = "Pilote ajout&eacute &agrave la base"
+    flash[:notice] = "Pilote ajout&eacute; &agrave; la base"
   else
     flash[:error] = "Operation echouee. On est dans la merde"
   end
@@ -61,6 +62,62 @@ get '/admin' do
   
   erb :admin
 end
+
+# formulaire pour attribuer une medaille ou citation
+get '/admin/attribution' do
+  @title='Recompenses'
+  @page='attribution'
+  @autruches = Autruche.all :order=> :callsign.asc
+  
+  erb :admin
+end
+
+# redirects to individual pilot page to set pilot rewards
+post '/admin/attribution' do
+  x = params[:choix_autruche]
+  uri = "/admin/attribution/#{x}"
+  redirect to(uri)
+end
+
+get '/admin/attribution/:id' do
+  @page="Attribution"
+  @id = params[:id]
+  @decorations = Decoration.all :order => :id.asc
+  @rewards = Reward
+  @autruche = Autruche.get(params[:id])
+  @flights = Flight.byAutruche(params[:id])
+  
+  puts @flights.inspect
+  
+  # debug
+  @flights.each do |f|
+    puts f.id  
+    if Reward.byFlight(f.id)
+      Reward.byFlight(f.id).each do |reward|
+        puts Decoration.get(reward.decoration_id).nom
+      end       
+    end
+    
+  end
+  
+  
+  erb :attribution
+end
+
+# save reward in db
+post '/admin/attribution/:id' do
+  f = Flight.first(:id => params[:choix_flight])
+  puts f.inspect
+  m = f.mission_id
+  a = f.avatar_id
+
+  n = Reward.first_or_create(:flight_id => f.id,
+                             :flight_mission_id => m,
+                             :flight_avatar_id => a,
+                             :decoration_id => params[:choix_decoration]) 
+  redirect back
+end
+
 
 # formulaire pour entrer une mission
 get '/admin/mission' do
@@ -155,7 +212,7 @@ get '/admin/avatar' do
   @page='avatar'
   @title='Gestion Avatar'
   
-  @autruches=Autruche.all :order=>:callsign.asc
+  @autruches = Autruche.all :order=>:callsign.asc
   @avatars = Avatar.all :order=> :id.asc
   
   if @avatars.empty?
@@ -192,13 +249,13 @@ end
 
 post '/admin/mission' do
   campagne = Campagne.get(params[:choix_campagne])
-  puts campagne.nom
+
   n = campagne.missions.new(:numero => params[:numero],
                             :nom => params[:nom],
                             :briefing => params[:briefing],
                             :debriefing => params[:debriefing]
                             )
-  puts n.inspect
+  
   campagne.save
   
   

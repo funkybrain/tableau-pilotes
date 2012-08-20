@@ -4,14 +4,29 @@
   <ul>
     <li><a href="../admin/campagne">Ajouter une campagne</a>
     <li><a href="../admin/pays">Ajouter un pays</a>
-    <li><a href="../admin/autruche">Ajouter une autruche</a>
+    <li><a href="../admin/autruche">Ajouter une autruche (pilote)</a>
     <li><a href="../admin/mission">Ajouter une mission</a>
     <li><a href="../admin/grade">Ajouter un grade</a>
     <li><a href="../admin/avatar">Ajouter un avatar</a>
+    <li><a href="../admin/attribution">Attribuer une recompense</a>
     
   </ul>  
 </p> 
 </div>
+
+<!-- ADMIN ATTRIBUTION MEDAILLE-->
+<% if @page=='attribution' %>
+  <h2> A quelle autruche voulez vous attribuer une recompense? </h2>
+  <form action="/admin/attribution" method="post">
+    <select name="choix_autruche">
+      <% @autruches.each do |a| %>
+        <option value="<%= a.id %>"> <%= a.id %>-<%=h a.callsign %> </option>
+      <% end %>
+    </select>
+    <input type="submit" value="Go!"/>
+
+
+<% end %>
 
 <% if @page=='campagne' %>
 
