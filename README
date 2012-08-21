@@ -3,7 +3,7 @@ Change Log:
 21/08/2012
 > A lot of refactoring and cleaning up of app and models
 > added session parameters for campagne en cours and pilote to simulate login (temp)
-
+> solved char encoding. Had to friggin set the encoding under the editor to utf-8 (via r-click properties... wtf!)
 
 To Do:
 -----

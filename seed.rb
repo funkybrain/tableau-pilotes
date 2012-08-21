@@ -1,3 +1,4 @@
+# encoding: UTF-8
 
 # seeding for testing
 class DbSeed
@@ -53,21 +54,22 @@ class DbSeed
     t.save
     
 # seed statut fin mission
-
-    statut1 = StatutFinMission.first_or_create(:statut=> 'Pose sur une base (intact)')
-    statut2 = StatutFinMission.first_or_create(:statut=> 'Pose sur une base (endommage)')
-    statut3 = StatutFinMission.first_or_create(:statut=> 'Pose en territoire ami (intact)')
-    statut4 = StatutFinMission.first_or_create(:statut=> 'Pose en territoire ami (endommage)')
-    statut5 = StatutFinMission.first_or_create(:statut=> 'Pose en territoire enemi (campagne)')
-    statut6 = StatutFinMission.first_or_create(:statut=> 'Ejecte (territoire ennemi)')
-    statut7 = StatutFinMission.first_or_create(:statut=> 'Ejecte (territoire ami)')
-    statut8 = StatutFinMission.first_or_create(:statut=> 'Mort')
+    
+    statut1 = StatutFinMission.first_or_create(:statut=> 'RTB')
+    statut2 = StatutFinMission.first_or_create(:statut=> 'Mort')
+    statut3 = StatutFinMission.first_or_create(:statut=> 'Ejecté ou Posé (territoire ennemi)')
+    statut4 = StatutFinMission.first_or_create(:statut=> 'Ejecté (territoire ami)')
+    statut5 = StatutFinMission.first_or_create(:statut=> 'Rentré à la base (endommagé)')
+    statut6 = StatutFinMission.first_or_create(:statut=> 'Posé sur ue base (intact)')
+    statut7 = StatutFinMission.first_or_create(:statut=> 'Posé sur ue base (endommagé)')
+    statut8 = StatutFinMission.first_or_create(:statut=> 'Posé en territoire ami (intact)')
+    statut9 = StatutFinMission.first_or_create(:statut=> 'Posé en territoire ami (endommagé)')
 
 # seed roles
 
-    role1=Role.first_or_create(:type => 'Ailier')
-    role2=Role.first_or_create(:type => 'Leader de Paire')
-    role3=Role.first_or_create(:type => 'Leader de Groupe')
+    role1 = Role.first_or_create(:type => 'Ailier')
+    role2 = Role.first_or_create(:type => 'Leader de Paire')
+    role3 = Role.first_or_create(:type => 'Leader de Groupe')
 
 
 # seed mission
@@ -82,10 +84,10 @@ class DbSeed
     camp.save
 
 # seed revendications
-    rev1 = Revendication.first_or_create(:descriptif => "Victoire Aerienne") 
+    rev1 = Revendication.first_or_create(:descriptif => "Victoire A&eacute;rienne") 
     rev2 = Revendication.first_or_create(:descriptif => "Attaque au sol") 
     rev3 = Revendication.first_or_create(:descriptif => "Attaque de navire") 
-    rev4 = Revendication.first_or_create(:descriptif => "Straffing secondaire") 
+    rev4 = Revendication.first_or_create(:descriptif => "Cible secondaire") 
 
 # seed victoires
     vic1 = Victoire.first_or_create(:type => "Confirmee")

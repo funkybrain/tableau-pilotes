@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'sinatra'
 require 'data_mapper'
 require 'sinatra/flash'
@@ -126,7 +128,7 @@ end
 
 
 # GET '/admin/mission'
-# formulaire pour ajouter une mission ˆ la base
+# formulaire pour ajouter une mission Ã  la base
 get '/admin/mission' do
   @title='Gestion Campagne'
   @page='mission'
@@ -276,7 +278,8 @@ post '/cr_mission' do
 
    result_1.save
 
-  # set avatar status to false if statut_fin_mission = mort
+  # set avatar status to false if statut_fin_mission = mort or capture
+  
 
 #  if flight
 #    flash[:error] = "Mission deja remplie"
