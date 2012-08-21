@@ -54,14 +54,14 @@ class DbSeed
     
 # seed statut fin mission
 
-    statut1 = Statutfinmission.first_or_create(:statut=> 'Pose sur une base (intact)')
-    statut2 = Statutfinmission.first_or_create(:statut=> 'Pose sur une base (endommage)')
-    statut3 = Statutfinmission.first_or_create(:statut=> 'Pose en territoire ami (intact)')
-    statut4 = Statutfinmission.first_or_create(:statut=> 'Pose en territoire ami (endommage)')
-    statut5 = Statutfinmission.first_or_create(:statut=> 'Pose en territoire enemi (campagne)')
-    statut6 = Statutfinmission.first_or_create(:statut=> 'Ejecte (territoire ennemi)')
-    statut7 = Statutfinmission.first_or_create(:statut=> 'Ejecte (territoire ami)')
-    statut8 = Statutfinmission.first_or_create(:statut=> 'Mort')
+    statut1 = StatutFinMission.first_or_create(:statut=> 'Pose sur une base (intact)')
+    statut2 = StatutFinMission.first_or_create(:statut=> 'Pose sur une base (endommage)')
+    statut3 = StatutFinMission.first_or_create(:statut=> 'Pose en territoire ami (intact)')
+    statut4 = StatutFinMission.first_or_create(:statut=> 'Pose en territoire ami (endommage)')
+    statut5 = StatutFinMission.first_or_create(:statut=> 'Pose en territoire enemi (campagne)')
+    statut6 = StatutFinMission.first_or_create(:statut=> 'Ejecte (territoire ennemi)')
+    statut7 = StatutFinMission.first_or_create(:statut=> 'Ejecte (territoire ami)')
+    statut8 = StatutFinMission.first_or_create(:statut=> 'Mort')
 
 # seed roles
 
@@ -72,13 +72,13 @@ class DbSeed
 
 # seed mission
     camp = Campagne.first(:nom => 'Campagne Rouge')
-    miss = Mission.first_or_create(:numero => 5,
-                                  :nom => 'La Belle Rouge',
-                                  :briefing => 'Longue vie aux Bolcheviks',
-                                  :debriefing => 'Ah ben en fait ca cest plutot mal passe',
-                                  :campagne_id => camp.id
+    miss = Mission.first_or_create(:numero => 1,
+                                   :nom => 'La Belle Rouge',
+                                   :briefing => 'Longue vie aux Bolcheviks',
+                                   :debriefing => 'Ah ben en fait ca cest plutot mal passe',
+                                   :campagne_id => camp.id
                                   )
-    puts miss.inspect   
+    #puts miss.inspect   
     camp.save
 
 # seed revendications

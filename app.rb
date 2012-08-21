@@ -6,7 +6,10 @@ require 'sinatra/flash'
 require './models.rb'
 require './seed.rb'
 
+# application settings
 enable :sessions
+set :root, File.dirname(__FILE__)
+
 
 # set environment variables
 SITE_TITLE = "Le Tableau des Pilotes"
@@ -14,7 +17,6 @@ SITE_DESCRIPTION = "Le QG des campagnes autruchiennes"
 
 
 #### Helper Methods ####
-
 
 helpers do
   # escape html to avoid XSS attacks
@@ -26,44 +28,46 @@ end
 
 # define routes and actions
 
-#homepage route - display all notes using GET verb
+# GET '/'
 get '/' do
-  @autruches=Autruche.all :order=>:id.desc
+  # set page title for display in browser tab
   @title='Liste des Pilotes'
+  
+  # retrieve required data from db
+  @autruches = Autruche.all :order => :id.desc
+  @campagnes = Campagne.all :order => :id.desc
+  
+  # display flash messages
   if @autruches.empty?
-    flash[:error] = 'Aucun pilote dans la base!'
+    flash.now[:error] = 'Aucun pilote dans la base!'
   end
+  
+  # render view
   erb :home
-
 end
-
-# homepage route for adding new notes using POST verb
+# POST '/'
 post '/' do
-  n=Autruche.new
-  #the :parameter is the name of the <textarea> defined in the form
-  #this is how you can target what field to take from the form
-  #and us in your database model
-  n.nom = params[:nom]
-  n.prenom = params[:prenom]
-  n.callsign = params[:callsign]
+  session[:autruche] = params[:choix_autruche]
+  session[:campagne] = params[:choix_campagne]  
+  
+  flash[:notice] = "Session parameters set!"
 
-  if n.save
-    flash[:notice] = "Pilote ajout&eacute; &agrave; la base"
-  else
-    flash[:error] = "Operation echouee. On est dans la merde"
-  end
   redirect '/'
 end
 
 
-# admin route for campaign manager
+
+# GET '/admin'
 get '/admin' do
   @title='Gestion Campagne'
   
   erb :admin
 end
 
-# formulaire pour attribuer une medaille ou citation
+
+
+# GET '/admin/attribution'
+# choose which pilot to reward
 get '/admin/attribution' do
   @title='Recompenses'
   @page='attribution'
@@ -71,14 +75,15 @@ get '/admin/attribution' do
   
   erb :admin
 end
-
+# POST '/admin/attribution'
 # redirects to individual pilot page to set pilot rewards
 post '/admin/attribution' do
   x = params[:choix_autruche]
   uri = "/admin/attribution/#{x}"
   redirect to(uri)
 end
-
+# POST '/admin/attribution/:id'
+# set pilot rewards
 get '/admin/attribution/:id' do
   @page="Attribution"
   @id = params[:id]
@@ -119,15 +124,43 @@ post '/admin/attribution/:id' do
 end
 
 
-# formulaire pour entrer une mission
+
+# GET '/admin/mission'
+# formulaire pour ajouter une mission ˆ la base
 get '/admin/mission' do
   @title='Gestion Campagne'
-  @missions = Mission.all :order=> :created_at.desc
-  @campagnes=Campagne.all :order=>:id.desc
   @page='mission'
+  
+  # display missions based on current campaign
+  # but use the last selected campaign if already post-ed
+  if not session[:filtre_mission]
+    session[:filtre_mission] = session[:campagne]
+  end
+  
+  puts session[:filtre_mission]
+  
+  @missions = Mission.all :campagne_id => session[:filtre_mission], :order=> :numero.asc
+  @campagnes = Campagne.all :order=>:id.desc
   
   erb :admin
 end
+# POST '/admin/mission'
+# Enregistrer la mission dans la base
+post '/admin/mission' do
+  campagne = Campagne.get(params[:choix_campagne])
+  session[:filtre_mission] = campagne.id
+
+  n = campagne.missions.new(:numero => params[:numero],
+                            :nom => params[:nom],
+                            :briefing => params[:briefing],
+                            :debriefing => params[:debriefing]
+                            )
+  
+  campagne.save  
+  
+  redirect '/admin/mission'
+end
+
 
 
 # admin route for campaign manager
@@ -184,25 +217,72 @@ get '/admin/autruche' do
   
 end
 
+# GET '/cr_mission'
+# Remplissage du compte rendu de mission
+get '/cr_mission' do
+  @title='Formulaire Mission'
 
-get '/mission' do
-  @page='xxx'
-  @title='xxx'
+
+  # only call missions for campaign in session
+  @missions = Mission.all(:campagne_id => session[:campagne])
+  # only call avatars for pilot in session that is alive (active)
+  @avatar = Avatar.first(:autruche_id => session[:autruche], :statut => true)
   
-  @missions = Mission.all :order=>:id.asc
-  @avatars = Avatar.all :order=>:id.asc
   @montures = Monture.all :order=>:id.asc
   @roles = Role.all :order=>:id.asc
   @flights = Flight.all :order=>:created_at.asc
-  @statuts = Statutfinmission.all :order=>:id.asc
+  @statuts = StatutFinMission.all :order=>:id.asc
   @revendications = Revendication.all  :order=>:id.asc
   @victoires = Victoire.all :order=>:id.asc
   
   if @flights.empty?
-    flash[:error] = "Liste des missions vide"
+    flash.now[:error] = "Aucune missions effectues par ce pilote"
   end
   
-  erb :mission
+  erb :cr_mission
+  
+end
+# POST '/cr_mission'
+# Enregistrer les resultats d'une mission
+post '/cr_mission' do
+
+  if params[:temps_vol] == ""
+      flight = Flight.first_or_create({:avatar_id => params[:choix_avatar],
+                                   :mission_id => params[:choix_mission]
+                                   },
+                                  {:monture_id => params[:choix_monture],
+                                   :role_id => params[:choix_role],
+                                   :statut_fin_mission_id => params[:choix_statut]
+                                   })
+  else
+      flight = Flight.first_or_create({:avatar_id => params[:choix_avatar],
+                                   :mission_id => params[:choix_mission]
+                                   },
+                                  {:monture_id => params[:choix_monture],
+                                   :role_id => params[:choix_role],
+                                   :temps_vol => params[:temps_vol],
+                                   :statut_fin_mission_id => params[:choix_statut]
+                                   })    
+  end
+  
+  # save flight results
+   result_1 = FlightResult.new(:flight_id => flight.id,
+                               :revendication_id => params[:revendic_1],
+                               :victoire_id => params[:revendic_1],
+                               :commentaire => params[:info_1],
+                               :flight_avatar_id => params[:choix_avatar],
+                               :flight_mission_id => params[:choix_mission]
+                                )
+
+   result_1.save
+
+  # set avatar status to false if statut_fin_mission = mort
+
+#  if flight
+#    flash[:error] = "Mission deja remplie"
+#  end
+
+  redirect '/cr_mission'
   
 end
 
@@ -247,20 +327,6 @@ post '/admin/autruche' do
   redirect '/admin/autruche'
 end
 
-post '/admin/mission' do
-  campagne = Campagne.get(params[:choix_campagne])
-
-  n = campagne.missions.new(:numero => params[:numero],
-                            :nom => params[:nom],
-                            :briefing => params[:briefing],
-                            :debriefing => params[:debriefing]
-                            )
-  
-  campagne.save
-  
-  
-  redirect '/admin/mission'
-end
 
 
 post '/admin/avatar' do
@@ -276,44 +342,3 @@ post '/admin/avatar' do
   redirect '/admin/avatar'
 end
 
-post '/mission' do
-
-  if params[:temps_vol] == ""
-      flight = Flight.first_or_create({:avatar_id => params[:choix_avatar],
-                                   :mission_id => params[:choix_mission]
-                                   },
-                                  {:monture_id => params[:choix_monture],
-                                   :role_id => params[:choix_role],
-                                   :statutfinmission_id => params[:choix_statut]
-                                   })
-  else
-      flight = Flight.first_or_create({:avatar_id => params[:choix_avatar],
-                                   :mission_id => params[:choix_mission]
-                                   },
-                                  {:monture_id => params[:choix_monture],
-                                   :role_id => params[:choix_role],
-                                   :temps_vol => params[:temps_vol],
-                                   :statutfinmission_id => params[:choix_statut]
-                                   })    
-  end
-  
-  # save flight results
-   result_1 = FlightResult.new(:flight_id => flight.id,
-                               :revendication_id => params[:revendic_1],
-                               :victoire_id => params[:revendic_1],
-                               :commentaire => params[:info_1],
-                               :flight_avatar_id => params[:choix_avatar],
-                               :flight_mission_id => params[:choix_mission]
-                                )
-   puts result_1.inspect
-   result_1.save
-
-#  if flight
-#    flash[:error] = "Mission deja remplie"
-#  end
-  puts flight.inspect
-  puts flight.saved?
-  
-  redirect '/mission'
-  
-end

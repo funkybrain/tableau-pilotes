@@ -1,12 +1,42 @@
 <div id="links">
 <p>
-  Liens:
+<h3>Liens:</h3>
   <ul>
-    <li> <a href="../admin">Administration</a>
-    <li> <a href="../mission">Formulaire mission</a>
+    <li> <a href="../admin">Administration de la base</a>
+    <li> <a href="../cr_mission">Formulaire mission (compte rendu)</a>
+    <li> <a href="../pilote">Recapitulatif pilote</a>
+    <li> <a href="../campagne">Recapitulatif campagne</a>
   </ul>
 </p> 
 </div>
+
+Temporary hack until authentification in place:
+<form class="cmxform" action="/" method="post">  
+  <fieldset>
+    <legend>Set session parameters</legend>
+    <ol>
+      <li>
+        <label> Pilote: </label>
+        <select name="choix_autruche">
+        <% @autruches.each do |a| %>
+          <option value="<%= a.id %>"> <%=h a.callsign %> </option>
+        <% end %>
+        </select>
+      </li>
+      <li>
+        <label> Campagne: </label>
+        <select name="choix_campagne">
+        <% @campagnes.each do |c| %>
+          <option value="<%= c.id %>"> <%=h c.nom %> </option>
+        <% end %>
+        </select>
+      </li>
+      <li>
+        <input type="submit" value="Go!" />
+      </li>
+    </ol>
+  </fieldset>
+</form>  
 <p>
 
 <h2>Tableau General</h2>

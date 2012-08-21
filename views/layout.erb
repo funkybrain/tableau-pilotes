@@ -1,24 +1,26 @@
 <!doctype html>  
 <html lang="en">
-<head>  
-   
+<head>     
   <meta charset="utf8">  
   <title><%= "#{@title} | #{SITE_TITLE}" %></title>  
   <link href="/reset.css" rel="stylesheet">  
   <link href="/style.css" rel="stylesheet">
   <link href="/rss.xml" rel="alternate" type="application/rss+xml">
-</head>  
+</head>
+
 <body>  
-  <div class="row">  
-      <div class="column grid_12">
-        <h1><a href="/"><%= SITE_TITLE %></a></h1>  
-        <h2><%= SITE_DESCRIPTION %></h2>
-      </div>
-  </div>  
+
+  <div>
+    <h2><a href="/"><%= SITE_TITLE %></a></h2>  
+    <h3><%= SITE_DESCRIPTION %></h3>
   
-  
-  <div class="row">
-    <div class="column grid_4">
+  <em style="color: blue"> Campagne en cours: <%=h Campagne.get(session[:campagne]).nom %> </em>
+  <br>
+  <em style="color: blue"> Autruche connectee: AV_<%=h Autruche.get(session[:autruche]).callsign %> </em>
+  <br>
+    
+
+  <div>
     <% if flash[:notice] %>
       <p class="notice"><%= flash[:notice] %>
     <% end %>
@@ -26,8 +28,6 @@
     <% if flash[:error] %>
       <p class="error"><%= flash[:error] %>
     <% end %>
-    </div>
-     
   </div>
     
   <%= yield %>
@@ -36,5 +36,7 @@
     <p>
     <p><small>Une application pour les <a href="http://forum.autruches.org">Autruches</a>.</small></p>  
   </footer>  
-</body>  
+
+</body>
+
 </html>  

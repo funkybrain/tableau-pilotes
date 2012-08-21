@@ -1,12 +1,8 @@
 Change Log:
 ----------
-20/08/12
-> Mise en place de l'attribution des medailles et citations par l'admin
-... j'en ai chi, on aborde les relations plus complexes et les problemes d'objets vides ˆ grer.
-
-19/08/12
-> Formulaire des pilotes complet et ˆ peu prs fonctionel (une seule revendication pour l'instant)
-> une soupon de mise en forme pour rendre la lecture pus facile
+21/08/2012
+> A lot of refactoring and cleaning up of app and models
+> added session parameters for campagne en cours and pilote to simulate login (temp)
 
 
 To Do:
@@ -18,6 +14,7 @@ To Do:
 > figure out why I can't just use flight_id PK in FlightResults, instead of all of Flight CK...
 > find eloquent way to add revendications dynamically
 > add image fields for all the nifty icons (medailles, etc)
+> use jQ sortable tables plug-in
 
 Dev Notes:
 ---------
@@ -29,3 +26,14 @@ e.g. in Grade table -  'belongs_to :nation' will add an 'id_nation' f key in the
 > use underscore to plurialize models with camel case: FlightResult => :flight_results
 > carefull with Model.All, you'll get a collection (array) back. Use Model.first if you want to be able to get a model property easily.
 > It you return a nil obect (record) when querying, trying to access a property (field) of that object will give you an error!
+
+(Archive) Change Log:
+--------------------
+
+20/08/12
+> Mise en place de l'attribution des medailles et citations par l'admin
+... j'en ai chi, on aborde les relations plus complexes et les problemes d'objets vides ˆ grer.
+
+19/08/12
+> Formulaire des pilotes complet et ˆ peu prs fonctionel (une seule revendication pour l'instant)
+> une soupon de mise en forme pour rendre la lecture pus facile

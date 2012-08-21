@@ -6,7 +6,14 @@ DataMapper::setup(:default, ENV['DATABASE_URL'] || "postgres://localhost/autruch
 # exception handling
 DataMapper::Model.raise_on_save_failure = true
 
-# define Autruche model - liste des pilotes
+
+
+# Table: Autruche
+# ---------------
+# Registers all AV pilots
+# ------------------------------
+# id | nom | prenom | callsign |
+# ------------------------------
 class Autruche
 # insures model persistence  
   include DataMapper::Resource
@@ -17,16 +24,26 @@ class Autruche
   property :callsign,   String,  :required => true, :default => "AV_Trouduc"
   property :created_at,  DateTime  # handled automagically thanks to dm-timestamp
 # associations  
-  has n, :avatars 
+  has n, :avatars
+  
 end
 
-# define Avatar model - liste des avatars de campagne
+
+
+
+# Table: Avatar
+# -------------
+# Liste des avatars associs aux pilotes
+# ----------------------------------------
+# id | nom | prenom | statut | autruche_id
+# ----------------------------------------
 class Avatar 
   include DataMapper::Resource
   
   property :id,         Serial    #auto-increment integer key
   property :nom,        String,  :required => true
   property :prenom,     String,  :required => true
+  # if statut false => avatar est mort
   property :statut,     Boolean, :required => true, :default => true
   property :created_at,  DateTime
   
@@ -34,27 +51,43 @@ class Avatar
   
   has n, :flights
   has n, :promotions
-
   
+  # these relatinships help make direct calls to e.g. avatar.missions
+  # they don't create additional columns in the table
   has n, :missions,    :through => :flights
   has n, :grades,      :through => :promotions
  
 end
 
-# Campagne model - liste des campagnes
+
+
+# Table: Campagne
+# -------------
+# Liste des campagnes
+# ---------------------------------
+# id | nom | descriptif | isactive 
+# ---------------------------------
 class Campagne
   include DataMapper::Resource
   
   property :id,         Serial    #auto-increment integer key
   property :nom,        Text,    :required => true
   property :descriptif, Text,    :required => false, :default => "Pas de descriptif"
+  # set isactive => true to set active campaign (used to display  correct data on homepage)
+  property :isactive,   Boolean, :required => false, :default => false
   property :created_at, DateTime
 
   has n, :missions
   
 end
 
-# Mission model - liste des missions
+
+# Table: Mission
+# -------------
+# Liste des missions associes aux campagnes
+# -----------------------------------------------------------
+# id (PK)| numero | nom | briefing | debriefing | campagne_id 
+# -----------------------------------------------------------
 class Mission
   include DataMapper::Resource
   
@@ -63,7 +96,6 @@ class Mission
   property :nom,        String,  :required => true
   property :briefing,   Text,    :required => false, :default => "Pas de briefing"
   property :debriefing, Text,    :required => false, :default => "Pas de debriefing"
-  #property :date_hist,  DateTime,:required => false
   property :created_at,  DateTime
   
   belongs_to :campagne
@@ -73,32 +105,47 @@ class Mission
  
 end
 
-# Table: Decoration
-# Liste des diverses mdailles et citations attribuables aux avatars/pilotes
-# ####################
-# id | nom | nation_id
-# ####################
 
-class Decoration
+# Table: Flight
+# -------------
+# use it to store meta-data about an avatar going on a mission
+# ----------------------------------------------------------------------------------------------
+# id | temps_vol | id_avatar (CK)| id_mission (CK)| id_role | id_statut_fin_mission | id_monture
+# ----------------------------------------------------------------------------------------------
+class Flight
   include DataMapper::Resource
   
-  property :id,       Serial
-  property :nom,      Text, :required => true
-  #property :image,    Binary
+  # define properies and keys
+  property :id,          Serial  # i think i have to set :key=> true here to solve my problems...
+  property :temps_vol,   Time, :required => false, :default => "00:00"
+  property :created_at,  DateTime
+  property :updated_at,  DateTime
   
-  belongs_to :nation
+  belongs_to :avatar,  :key => true
+  belongs_to :mission, :key => true  
+  belongs_to :role
+  belongs_to :statut_fin_mission
+  belongs_to :monture
   
+  has n, :flight_results
   has n, :rewards
-#  has n, :avatars, :through => :rewards
+  
+  # remember that you ca chain these methods for more complex queries
+  # retrieve a collection of all flights by a given pilot (i.e. all his avatars)
+  def self.byAutruche(id)
+    all(Flight.avatar.autruche.id => id)
+  end
   
 end
 
-# Table: Reward
-# enregistre l'attribution de mdailles et citations pour chaque pilote
-# #################################################
-# id | id_flight | id_decoration
-# #################################################
 
+
+# Table: Reward
+# -------------
+# enregistre l'attribution de mdailles et citations pour chaque pilote
+# ------------------------------
+# id | id_flight | id_decoration
+# ------------------------------
 class Reward
   include DataMapper::Resource
   
@@ -109,6 +156,7 @@ class Reward
   belongs_to :flight
   belongs_to :decoration
   
+  # retrieve a collection of all rewards associate with a given flight
   def self.byFlight(id)
     all(Reward.flight.id => id)
   end
@@ -116,8 +164,37 @@ class Reward
 end
 
 
+
+# Table: Decoration
+# -----------------
+# Liste des diverses mdailles et citations attribuables aux avatars/pilotes
+# --------------------
+# id | nom | nation_id
+# --------------------
+class Decoration
+  include DataMapper::Resource
+  
+  property :id,       Serial
+  property :nom,      Text, :required => true
+  #property :image,    Binary
+  
+  belongs_to :nation
+  
+  has n, :rewards
+
+end
+
+
+
+# Table: Grade
+# -----------------
+# Liste des divers grades attribuables aux avatars/pilotes
+# --------------------
+# id | nom | nation_id
+# --------------------
 class Grade
   include DataMapper::Resource
+  
   property :id,       Serial
   property :nom,      Text, :required => true
   #property :image,    Binary
@@ -125,62 +202,24 @@ class Grade
   belongs_to :nation
   
   has n, :promotions
-  has n, :avatars, :through =>:promotions
-  
+
 end
 
-# Table: Flight
-# use it to store meta-data about when an avatar went on a mission
-# ##########################################################################
-# id | temps_vol | id_avatar | id_mission | id_role | id_statut | id_monture
-# ##########################################################################
 
-class Flight
-  
-  include DataMapper::Resource
-  
-  # define properies and keys
-  property :id,          Serial
-  property :temps_vol,   Time, :required => false, :default => "00:00"
-  property :created_at,  DateTime
-  property :updated_at,  DateTime
-  
-  belongs_to :avatar,  :key => true
-  belongs_to :mission, :key => true
-  
-  belongs_to :role
-  belongs_to :statutfinmission
-  belongs_to :monture
-  
-  has n, :flight_results
-  has n, :rewards
-  
-  # define commonly used scopes as methods to call them from anywhere
-#  def self.avatar(id)
-#    all(:avatar_id => id)
-#  end
-  # call it with Flight.avatar(id)
-  # remember that you ca chain these methods for more complex queries
-  
-  def self.byAutruche(id)
-    #autruche = {:avatar_id => {:autruche_id => id}}
-    #autruche = {Flight.avatar.autruche.id => id}
-    #puts autruche
-    #autruche = {:avatar_id => 72}
-    all(Flight.avatar.autruche.id => id)
-  end
-  
-end
 
-# FlightResult - stores the revendication/victoire pair submitted in formulaire pilote
+# Table: FlightResult
+# -------------------
+# Stores the revendication/victoire pair submitted in formulaire pilote
 # for each Flight (i.e. for each avatar/mission pair)
-
+# ---------------------------------------------------------------
+# id | commentaire | revendication_id | victoire_id | flight_id |
+# ---------------------------------------------------------------
 class FlightResult
   
   include DataMapper::Resource
   
   property :id,           Serial
-  property :commentaire,  Text, :required => false
+  property :commentaire,  Text, :required => false, :length => 255
   property :created_at,   DateTime
   
   belongs_to :revendication
@@ -189,98 +228,128 @@ class FlightResult
   
 end
 
-# Promotion model - defines the join between avatars and grades
+
+
+# Table: Promotion
+# -------------------
+# defines the join between avatars and grades
 # use it to store meta-data about when an avatar gets a promotion
+# ---------------------------------------------------------------
+# id | avatar_id | grade_id |
+# ---------------------------------------------------------------
 class Promotion
   include DataMapper::Resource
-  
-  property :date_promotion, DateTime
-  property :created_at,  DateTime
-  property :updated_at,  DateTime
+
+  property :id,             Serial
+  property :created_at,     DateTime
+  property :updated_at,     DateTime
   
   belongs_to :avatar, :key => true
   belongs_to :grade,  :key => true
   
-  #has 1, :mission
 end
 
 
-#####################
-### HELPER MODELS ###
-#####################
-
+# Table: StatutFinMission
+# -------------------
 # Etat du pilote renseign en fin de mission; e.g. Eject
-class Statutfinmission
+# --------------
+# id | statut |
+# --------------
+class StatutFinMission
   include DataMapper::Resource
+  
   property :id,     Serial
   property :statut, Text, :required => true
   
-  has n, :flights
-  
 end
 
+
+
+# Table: Revendication
+# -------------------
 # Type de revendication renseigne dans le formulaire mission, e.g. Attaque au sol
-class Revendication
-  
+# ----------------
+# id | descriptif |
+# ----------------
+class Revendication 
   include DataMapper::Resource
   
   property :id,          Serial
   property :descriptif , Text, :required => true
   
-  has n, :flight_results
+#  has n, :flight_results
   
 end
 
+
+
+# Table: Revendication
+# -------------------
 # Type de victoire renseige dans le formulaire mission, e.g. Probable
-class Victoire
-  
+# -----------
+# id | type |
+# -----------
+class Victoire 
   include DataMapper::Resource
   
   property :id,          Serial
   property :type , Text, :required => true
 
-  has n, :flight_results
-  
+#  has n, :flight_results
 end
 
+
+# Table: Nation
+# -------------------
 # Liste des pays associs aux avions, dcorations et grades
-class Nation
-  
+# -----------
+# id | pays |
+# -----------
+class Nation 
   include DataMapper::Resource
   
   property :id,        Serial
   property :pays,      Text, :required => true
   
-  has n, :montures
-  has n, :decorations
-  has n, :grades
-  
+#  has n, :montures
+#  has n, :decorations
+#  has n, :grades
 end
 
+
+
+# Table: Monture
+# -------------------
 # Liste des Avion et provenance (pays)
+# --------------------------------------
+# id | modele | specialite | nation_id |
+# --------------------------------------
 class Monture
-  
   include DataMapper::Resource
   
   property :id,          Serial
   property :modele,      Text, :required => true
   #property :image,       Binary
+  # pour diffrencier chasse/attaque au sol?
   property :specialite,  Integer, :required => false
   
   belongs_to :nation, :required => false
 
-  has n, :flights
-  
 end
 
+
+# Table: Role
+# -------------------
 # Role tenu dans une mission, e.g. Ailier
+# -----------
+# id | type |
+# -----------
 class Role
   include DataMapper::Resource
   
   property :id,   Serial
   property :type, Text, :required=> true
-  
-  has n, :flights
   
 end
 

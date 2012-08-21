@@ -182,7 +182,7 @@
       Choisir une campagne:
       <select name="choix_campagne">
         <% @campagnes.each do |c| %>
-          <option value="<%= c.id %>"> <%= c.id %>-<%=h c.nom %> </option>
+          <option value="<%= c.id %>"> <%=h c.nom %> </option>
         <% end %>
       </select>
       <br>
@@ -202,9 +202,8 @@
     <!-- Table header -->
     <thead>
       <tr>
-        <th scope="col">#</th>
         <th scope-"col">Campagne</th>
-        <th scope="col">Nom</th>
+        <th scope="col">Mission</th>
         <th scope="col">Briefing</th>
         <th scope="col">De-Briefing</th>
         
@@ -217,13 +216,10 @@
     <% @missions.each do |mission| %> 
       <tr>
         <td>
-          <%= i %>
-        </td>
-        <td>
           <%=h mission.campagne.nom %>
         </td>
         <td>
-          <%=h mission.nom %>
+          #<%=h mission.numero %>: <%=h mission.nom %>
         </td>
         <td>
           <%=h mission.briefing %>
@@ -238,8 +234,7 @@
           <class="meta"><%= mission.created_at.strftime("Created: %m/%d/%Y") %>
         </td>  
       </tr>
-      <% i=i+1 %>
-      <% end %>
+     <% end %>
     </tbody>  
   </table>
 

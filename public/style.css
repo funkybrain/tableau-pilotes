@@ -190,3 +190,8 @@ form.cmxform fieldset fieldset label {
 input.revendication {
     width: 350px /* width of revendication text input */
 }
+
+input.disabled { /* Text and background colour, medium red on light yellow */
+color:#933;
+background-color:#ffc;
+}
