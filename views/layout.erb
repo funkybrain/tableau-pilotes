@@ -6,6 +6,13 @@
   <link href="/reset.css" rel="stylesheet">  
   <link href="/style.css" rel="stylesheet">
   <link href="/rss.xml" rel="alternate" type="application/rss+xml">
+    
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+  <!-- load custom js for each route -->
+  <% if @js %>
+    <script type="text/javascript" src="/js/<%= @js %>"></script>
+  <% end %>  
+
 </head>
 
 <body>  
@@ -14,9 +21,18 @@
     <h2><a href="/"><%= SITE_TITLE %></a></h2>  
     <h3><%= SITE_DESCRIPTION %></h3>
   
-  <em style="color: blue"> Campagne en cours: <%=h Campagne.get(session[:campagne]).nom %> </em>
+  <em style="color: blue">
+    Campagne en cours:
+    <% if (session[:campagne]) %>
+      <%=h Campagne.get(session[:campagne]).nom %>
+    <% end%>
+  </em>
   <br>
-  <em style="color: blue"> Autruche connectee: AV_<%=h Autruche.get(session[:autruche]).callsign %> </em>
+  <em style="color: blue">
+    Autruche connectee: AV_
+    <% if (session[:autruche]) %>
+      <%=h Autruche.get(session[:autruche]).callsign %>
+    <% end %></em>
   <br>
     
 

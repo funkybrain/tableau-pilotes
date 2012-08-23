@@ -133,15 +133,18 @@ get '/admin/mission' do
   @title='Gestion Campagne'
   @page='mission'
   
-  # display missions based on current campaign
-  # but use the last selected campaign if already post-ed
-  if not session[:filtre_mission]
-    session[:filtre_mission] = session[:campagne]
+  # load the appropriate js file in template
+  @js = "mission.js"
+  
+  
+  if params[:campagne_id]
+    camp_id = params[:campagne_id]
+  else
+    camp_id = session[:campagne]
   end
   
-  puts session[:filtre_mission]
   
-  @missions = Mission.all :campagne_id => session[:filtre_mission], :order=> :numero.asc
+  @missions = Mission.all :campagne_id => camp_id, :order=> :numero.asc
   @campagnes = Campagne.all :order=>:id.desc
   
   erb :admin
@@ -149,8 +152,11 @@ end
 # POST '/admin/mission'
 # Enregistrer la mission dans la base
 post '/admin/mission' do
-  campagne = Campagne.get(params[:choix_campagne])
-  session[:filtre_mission] = campagne.id
+  
+  # retrive data sent by the Ajax get request
+  camp_id = params[:campagne_id]
+  campagne = Campagne.get(camp_id)
+  
 
   n = campagne.missions.new(:numero => params[:numero],
                             :nom => params[:nom],
