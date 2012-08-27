@@ -239,7 +239,7 @@ end
 # Remplissage du compte rendu de mission
 get '/cr_mission' do
   @title='Formulaire Mission'
-
+  @js = "cr_mission.js"
 
   # only call missions for campaign in session
   @missions = Mission.all(:campagne_id => session[:campagne])

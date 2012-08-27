@@ -20,7 +20,7 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
 
 <!-- ADMIN MISSION -->
 
-  <form class="cmxform" action="/cr_mission" method="post">  
+  <form id="mission" class="cmxform" action="/cr_mission" method="post">  
   <fieldset>
     <legend>Formulaire mission</legend>
     <ol>
@@ -64,41 +64,26 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
         <% end %>
         </select>
       </li>
-      <li>
-        <label>Revendication #1:</label>
-        <select name="revendic_1">
-        <% @revendications.each do |r| %>
-          <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
-        <% end %>
+      <li class="revendication">
+        <label>Revendication:</label>
+        <select name="revendication">
+          <option value=""> -- </option>
+          <% @revendications.each do |r| %>
+            <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
+          <% end %>
         </select>
-        <input class="revendication" type="text" name="info_1" placeholder="infos complementaires"/>
-        <select name="vic_1">
-        <% @victoires.each do |v| %>
-          <option value="<%= v.id %>"> <%=h v.type %> </option>
-        <% end %>
+        <input class="revendication" type="text" name="info" placeholder="infos complementaires"/>
+        <select name="vic">
+          <option value=""> -- </option>
+          <% @victoires.each do |v| %>
+            <option value="<%= v.id %>"> <%=h v.type %> </option>
+          <% end %>          
         </select>
-      </li>  
-      <li>
-        <label style="color: grey">Revendication #2:</label>
-        <select name="revendic_2">
-        <% @revendications.each do |r| %>
-          <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
-        <% end %>
-        </select>
-        <input class="revendication" type="text" name="info_2" placeholder="!! cette ligne pas encore prise en compte!!"/>
-        <select name="vic_2">
-        <% @victoires.each do |v| %>
-          <option value="<%= v.id %>"> <%=h v.type %> </option>
-        <% end %>
-        </select>
+        <a id="add" href="/"><img src="../img/add.png"/></a>
       </li>        
-      
-      <li>
-          <input type="submit" value="Soumettre Formulaire!">
-      </li>    
     </ol>
+    <input type="submit" value="Soumettre Formulaire!">
   </fieldset>  
-  
 </form>  
  
 

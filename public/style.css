@@ -195,3 +195,7 @@ input.disabled { /* Text and background colour, medium red on light yellow */
 color:#933;
 background-color:#ffc;
 }
+
+fieldset {
+background-color: #FFFF9A;    
+}
