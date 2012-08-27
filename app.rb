@@ -3,19 +3,22 @@
 require 'sinatra'
 require 'data_mapper'
 require 'sinatra/flash'
+require 'sinatra/reloader'
 
-# include sub-files needed for main app
+# include libraries needed for main app
 require './models.rb'
 require './seed.rb'
 
 # application settings
 enable :sessions
 set :root, File.dirname(__FILE__)
-
+# set :port, 4567
 
 # set environment variables
 SITE_TITLE = "Le Tableau des Pilotes"
 SITE_DESCRIPTION = "Le QG des campagnes autruchiennes"
+
+
 
 
 #### Helper Methods ####
@@ -27,6 +30,12 @@ helpers do
 
 end
 
+# fake slow net connection for ajax requests
+before do
+  if request.xhr?
+    sleep 1
+  end
+end
 
 # define routes and actions
 
@@ -34,6 +43,10 @@ end
 get '/' do
   # set page title for display in browser tab
   @title='Liste des Pilotes'
+  
+  #set hacky session variables
+  session[:autruche] ? session[:autruche]:Autruche.first().id
+  session[:campagne] ? session[:campagne]:Campagne.first().id 
   
   # retrieve required data from db
   @autruches = Autruche.all :order => :id.desc
@@ -130,34 +143,31 @@ end
 # GET '/admin/mission'
 # formulaire pour ajouter une mission à la base
 get '/admin/mission' do
-  @title='Gestion Campagne'
-  @page='mission'
-  
+  @title='Gestion Mission'
   # load the appropriate js file in template
   @js = "mission.js"
-  
-  
-  if params[:campagne_id]
-    camp_id = params[:campagne_id]
-  else
-    camp_id = session[:campagne]
-  end
-  
-  
-  @missions = Mission.all :campagne_id => camp_id, :order=> :numero.asc
+  # retrieve list of all campagnes, latest on top
   @campagnes = Campagne.all :order=>:id.desc
+  @selected = params[:campagne]
   
-  erb :admin
+  if !params[:campagne]
+    #puts "camp id retrieved from normal GET"
+    camp_id = @campagnes[0].id # first campagne in collection is latest
+  else
+    #puts "camp id retrieved from ajax call"
+    camp_id = params[:campagne] # if submitted via Ajax
+  end
+  # retrieve list of missions for selected campaign
+  @missions = Mission.all :campagne_id => camp_id, :order=> :numero.asc
+  
+  erb :admin_mission , :layout => !request.xhr?
+  
 end
-# POST '/admin/mission'
+# POST '/admin/mission/new'
 # Enregistrer la mission dans la base
 post '/admin/mission' do
-  
-  # retrive data sent by the Ajax get request
-  camp_id = params[:campagne_id]
-  campagne = Campagne.get(camp_id)
-  
 
+  campagne = Campagne.get(params[:campagne]);
   n = campagne.missions.new(:numero => params[:numero],
                             :nom => params[:nom],
                             :briefing => params[:briefing],
@@ -166,7 +176,7 @@ post '/admin/mission' do
   
   campagne.save  
   
-  redirect '/admin/mission'
+  redirect "/admin/mission?campagne=#{params[:campagne]}"
 end
 
 
@@ -238,7 +248,7 @@ get '/cr_mission' do
   
   @montures = Monture.all :order=>:id.asc
   @roles = Role.all :order=>:id.asc
-  @flights = Flight.all :order=>:created_at.asc
+  @flights = Flight.all(:avatar_id => @avatar.id, :order=>:created_at.asc)
   @statuts = StatutFinMission.all :order=>:id.asc
   @revendications = Revendication.all  :order=>:id.asc
   @victoires = Victoire.all :order=>:id.asc

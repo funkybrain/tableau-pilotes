@@ -1,13 +1,13 @@
 Change Log:
 ----------
-21/08/2012
-> A lot of refactoring and cleaning up of app and models
-> added session parameters for campagne en cours and pilote to simulate login (temp)
-> solved char encoding. Had to friggin set the encoding under the editor to utf-8 (via r-click properties... wtf!)
+27/08/2012
+> added sinatra/reloader
+> refactored admin/mission to use Ajax
+> bugfixing
 
 To Do:
 -----
-> add flags for campagne en cours et nations joues pour filtrer tout ce qui est li ˆ une nationalit
+> add flags for campagne en cours et nations jouÃ©es pour filtrer tout ce qui est liÃ© Ã  une nationalitÃ©
 > fix horrible hack on the temps_vol db submission
 > tighten requirements on Model fields once it is clear what is/isn't absolutely required
 > validate (regex) all text input fields
@@ -29,11 +29,15 @@ e.g. in Grade table -  'belongs_to :nation' will add an 'id_nation' f key in the
 
 (Archive) Change Log:
 --------------------
+21/08/2012
+> A lot of refactoring and cleaning up of app and models
+> added session parameters for campagne en cours and pilote to simulate login (temp)
+> solved char encoding. Had to friggin set the encoding under the editor to utf-8 (via r-click properties... wtf!)
 
 20/08/12
 > Mise en place de l'attribution des medailles et citations par l'admin
-... j'en ai chi, on aborde les relations plus complexes et les problemes d'objets vides ˆ grer.
+... j'en ai chiÃ©, on aborde les relations plus complexes et les problemes d'objets vides Ã  gÃ©rer.
 
 19/08/12
-> Formulaire des pilotes complet et ˆ peu prs fonctionel (une seule revendication pour l'instant)
-> une soupon de mise en forme pour rendre la lecture pus facile
+> Formulaire des pilotes complet et Ã  peu prÃ¨s fonctionel (une seule revendication pour l'instant)
+> une soupÃ§on de mise en forme pour rendre la lecture pus facile

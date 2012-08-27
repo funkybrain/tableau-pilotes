@@ -176,26 +176,48 @@
 
 <!-- ADMIN MISSION -->
 <% if @page=='mission' %>
+    <div id="mission_form">
+      <form class="cmxform" name="mission" action="/admin/mission" method="post">
+        <fieldset>
+        <legend>Ajouter une mission</legend>
+        <ol>
+        <li>
+          <label for="campagne" id="campagne_label" >Choisir une Campagne</label>
+          <select id="campagne" name="campagne">
+            <% @campagnes.each do |c| %>
+              <option value="<%= c.id %>"> <%=h c.nom %> </option>
+            <% end %>
+          </select>
+          <label class="confirm" for="campagne" id="campagne_confirm">Liste mission rafraichie</label>
+        </li>
+        <li>
+          <label for="numero" id="numero_label" >Num&eacute;ro</label>
+          <input type="text" name="numero" id="numero" placeholder="" size="5"/>
+          <label class="error" for="numero" id="numero_error">Champ obligatoire.</label>
+        </li>
+        <li>
+          <label for="nom" id="nom_label" >Nom de la mission</label>
+          <input type="text" name="nom" id="nom" placeholder="" size="50"/>
+          <label class="error" for="nom" id="nom_error">Champ obligatoire.</label>      
+        </li>
+        <li>
+          <label for="briefing" id="briefing_label" >Briefing</label>
+          <textarea name="briefing" id="briefing" placeholder="" cols="50" rows="5"/></textarea>
+          <label class="error" for="briefing" id="briefing_error">Champ non valide</label>      
+        </li>
+        <li>
+          <label for="debriefing" id="debriefing_label" >Debriefing</label>
+          <textarea name="debriefing" id="debriefing" placeholder="" cols="50" rows="5"/></textarea>
+          <label class="error" for="debriefing" id="debriefing_error">Champ non valide</label>      
+        </li>
 
-   <h2>Ajouter une mission</h2>
-    <form action="/admin/mission" method="post">  
-      Choisir une campagne:
-      <select class="campagne" name="choix_campagne">
-        <% @campagnes.each do |c| %>
-          <option value="<%= c.id %>"> <%=h c.nom %> </option>
-        <% end %>
-      </select>
-      <br>
-      <textarea name="numero" placeholder="numero de mission"></textarea>
-      <textarea name="nom" placeholder="nom de la mission"></textarea>
-      
-      <br>
-      <textarea name="briefing" placeholder="briefing"></textarea>
-      <textarea name="debriefing" placeholder="debriefing"></textarea>
-      
-      <input type="submit" value="Ajouter Mission!">  
-    </form>  
- 
+        <li>
+          <input type="submit" name="submit" id="submit_btn" class="button" value="Ajouter" />
+        </li>
+        </ol>  
+        </fieldset>
+      </form>
+    </div>
 
   <h2> Liste des Missions</h2>
   <table div="table_mission" id="hor-minimalist-a" summary="Main Table">
@@ -212,32 +234,30 @@
     
     <!-- Table body -->
     <tbody>
-    <% i=1 %>
-    <% @missions.each do |mission| %> 
+    <% @missions.each do |m| %> 
       <tr>
         <td>
-          <%=h mission.campagne.nom %>
+          <%=h m.campagne.nom %>
         </td>
         <td>
-          #<%=h mission.numero %>: <%=h mission.nom %>
+          #<%=h m.numero %>: <%=h m.nom %>
         </td>
         <td>
-          <%=h mission.briefing %>
+          <%=h m.briefing %>
         </td>
         <td>
-          <%=h mission.debriefing %>
+          <%=h m.debriefing %>
         </td>
         <td>
-          <span><a href="/<%= mission.id %>">[edit]</a></span>  
+          <span><a href="/<%= m.id %>">[edit]</a></span>  
         </td>
         <td>
-          <class="meta"><%= mission.created_at.strftime("Created: %m/%d/%Y") %>
+          <class="meta"><%= m.created_at.strftime("Created: %m/%d/%Y") %>
         </td>  
       </tr>
      <% end %>
     </tbody>  
   </table>
-
 <% end %>
 
 
