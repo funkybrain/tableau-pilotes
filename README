@@ -2,6 +2,8 @@ Change Log:
 ----------
 30/08/2012
 > added some (very) basic UI
+> debrief mission can now accept multiple claims, separate from mission debrief itself.
+Not surprisingly, by implementing this flexibility I opened a can of worms , but, eh, it seems to work.
 
 27/08/2012
 > added sinatra/reloader

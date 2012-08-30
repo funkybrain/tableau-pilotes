@@ -10,7 +10,6 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
 <br>
 
 <!-- ADMIN MISSION -->
-
   <form id="mission" class="cmxform" action="/cr_mission" method="post">  
   <fieldset>
     <legend>Formulaire mission</legend>
@@ -55,25 +54,46 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
         <% end %>
         </select>
       </li>
+    </ol>
+      <input type="submit" value="Soumettre Formulaire!">
+    </fieldset>  
+  </form>  
+ 
+ 
+ 
+  <form id="revendication" class="cmxform" action="/cr_mission/revendication" method="post">  
+  <fieldset>
+    <legend>Revendications</legend>
+    <ol>
+      <li>
+        <label> Mission: </label>
+        <select name="choix_mission">
+        <% @flights.missions.each do |m| %>
+          <option value="<%= m.id %>"> <%= m.numero %>-<%=h m.nom %> </option>
+        <% end %>
+        </select>
+        <label><img class="spinner" src="../img/ajax-loader.gif"/></label>
+      </li>
       <li class="revendication">
-        <label>Revendication:</label>
-        <select name="revendication">
+        <label><a id="add" href="/"><img src="../img/add.png"/></a></label>
+        <select name='revendication[]'>
           <% @revendications.each do |r| %>
             <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
           <% end %>
         </select>
-        <input class="revendication" type="text" name="info_complementaire" placeholder="infos complementaires"/>
-        <select name="victoire">
+        <input class="revendication" type="text" name='info_complementaire[]' placeholder="infos complementaires"/>
+        <select name='victoire[]'>
           <% @victoires.each do |v| %>
             <option value="<%= v.id %>"> <%=h v.type %> </option>
           <% end %>          
         </select>
-        <a id="add" href="/"><img src="../img/add.png"/></a>
-      </li>        
+      </li>
     </ol>
+    <input type="hidden" name="choix_avatar" value="<%= @avatar.id %>" />
     <input type="submit" value="Soumettre Formulaire!">
   </fieldset>  
-</form>  
+</form> 
+ 
  
 
   <h3>Liste des missions pr&eacute;alablement effectu&eacute;es</h3>
@@ -81,30 +101,28 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
     <!-- Table header -->
     <thead>
       <tr>
-        <th scope="col">#</th>
+
         <th scope="col">Campagne</th>
         <th scope-"col">Mission</th>
         <th scope="col">Avatar</th>
         <th scope="col">Monture</th>
         <th scope="col">Role</th>
         <th scope="col">Statut</th>
+        <th scope="col">Revendications</th>
         
        </tr>
     </thead>
     
     <!-- Table body -->
     <tbody>
-    <% i=1 %>
+
     <% @flights.each do |flight| %> 
       <tr>
-        <td>
-          <%= i %>
-        </td>
         <td>
           <%=h flight.mission.campagne.nom %>
         </td>
         <td>
-          <%=h flight.mission.nom %>
+          <%=h flight.mission.numero %>: <%=h flight.mission.nom %>
         </td>
         <td>
           <%=h flight.avatar.prenom %> <%=h flight.avatar.nom %>
@@ -119,13 +137,22 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
           <%=h flight.statut_fin_mission.statut %>
         </td>
         <td>
-          <span><a href="/<%= flight.avatar.id %>/<%= flight.mission.id %>">[edit]</a></span>  
+          <ul>
+          <% FlightResult.byFlight(flight.id).each do |result| %>
+              <li>
+                <%=h Revendication.first(:id => result.revendication_id).descriptif %> - <%=h Victoire.first(:id => result.victoire_id).type %>
+                
+              </li>
+          <% end %>
+          </ul>
         </td>
         <td>
-          <class="meta"><%= flight.created_at.strftime("Created: %m/%d/%Y") %>
+          <span><a href="/<%= flight.avatar.id %>/<%= flight.mission.id %>">[edit]</a></span>  
+        </td>
+        <td class="meta">
+          <%= flight.created_at.strftime("Created: %m/%d/%Y") %>
         </td>  
       </tr>
-      <% i=i+1 %>
       <% end %>
     </tbody>  
   </table>

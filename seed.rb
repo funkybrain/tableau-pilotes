@@ -84,16 +84,16 @@ class DbSeed
     camp.save
 
 # seed revendications
-    rev1 = Revendication.first_or_create(:descriptif => "Victoire A&eacute;rienne") 
+    rev1 = Revendication.first_or_create(:descriptif => "Victoire Aérienne") 
     rev2 = Revendication.first_or_create(:descriptif => "Attaque au sol") 
     rev3 = Revendication.first_or_create(:descriptif => "Attaque de navire") 
     rev4 = Revendication.first_or_create(:descriptif => "Cible secondaire") 
 
 # seed victoires
-    vic1 = Victoire.first_or_create(:type => "Confirmee")
-    vic2 = Victoire.first_or_create(:type => "Partagee")
+    vic1 = Victoire.first_or_create(:type => "Confirmée")
+    vic2 = Victoire.first_or_create(:type => "Partagée")
     vic1 = Victoire.first_or_create(:type => "Probable")
-    vic1 = Victoire.first_or_create(:type => "Endommagee")
+    vic1 = Victoire.first_or_create(:type => "Endommagée")
     
   end
 end

@@ -225,6 +225,12 @@ class FlightResult
   belongs_to :revendication
   belongs_to :victoire
   belongs_to :flight
+
+  # retrieve a collection of all results associate with a given flight
+  def self.byFlight(id)
+    all(flight.id => id)
+  end
+
   
 end
 

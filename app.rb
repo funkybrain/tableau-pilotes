@@ -15,8 +15,8 @@ set :root, File.dirname(__FILE__)
 # set :port, 4567
 
 # set environment variables
-SITE_TITLE = "Le Tableau des Pilotes"
-SITE_DESCRIPTION = "Le QG des campagnes autruchiennes"
+SITE_TITLE ||= "Le Tableau des Pilotes"
+SITE_DESCRIPTION ||= "Le QG des campagnes autruchiennes"
 
 #### Helper Methods ####
 
@@ -244,10 +244,12 @@ get '/cr_mission' do
   @js = "cr_mission.js"
 
   # only call missions for campaign in session
-  @missions = Mission.all(:campagne_id => session[:campagne])
+  @missions = Mission.all(:campagne_id => session[:campagne], :order=>:numero.desc)
+  
   # only call avatars for pilot in session that is alive (active)
   @avatar = Avatar.first(:autruche_id => session[:autruche], :statut => true)
   
+  # retrieve all flights associated with current avatar
   @flights = Flight.all(:avatar_id => @avatar.id, :order=>:created_at.asc)
   
   @montures = Monture.all :order=>:id.asc
@@ -257,7 +259,7 @@ get '/cr_mission' do
   @victoires = Victoire.all :order=>:id.asc
   
   if @flights.empty?
-    flash.now[:error] = "Aucune missions effectues par ce pilote"
+    flash.now[:error] = "Aucunes missions effectues par ce pilote"
   end
   
   erb :cr_mission
@@ -269,8 +271,6 @@ post '/cr_mission' do
 
   (params[:temps_vol] == "") ? temps_vol="00:00":temps_vol=params[:temps_vol]
   
-  puts params.inspect
-  
   flight = Flight.first_or_create({:avatar_id => params[:choix_avatar],
                                    :mission_id => params[:choix_mission]
                                    },
@@ -280,16 +280,6 @@ post '/cr_mission' do
                                    :statut_fin_mission_id => params[:choix_statut]
                                    })    
   
-  # save flight results
-   result = FlightResult.new(:flight_id => flight.id,
-                               :revendication_id => params[:revendication],
-                               :victoire_id => params[:victoire],
-                               :commentaire => params[:info_complementaire],
-                               :flight_avatar_id => params[:choix_avatar],
-                               :flight_mission_id => params[:choix_mission]
-                                )
-  
-   result.save
 
   #TODO: set avatar status to false if statut_fin_mission = mort or capture
   # check warpigs message on subject
@@ -298,10 +288,36 @@ post '/cr_mission' do
     flash[:error] = "Mission deja remplie"
   end
 
-  redirect '/cr_mission'
-  
+  redirect '/cr_mission'  
 end
+# POST '/cr_mission/revendication'
+# Enregistrer les revebndications liées à une mission
+post '/cr_mission/revendication' do
+  #
+  #params[:revendication].each_index do |i|
+  #  print params[:choix_mission] + "-"
+  #  print params[:choix_avatar] + "-"
+  #  print params[:revendication][i] + "-"
+  #  print params[:info_complementaire][i] + "-"
+  #  print params[:victoire][i]
+  #  puts ""
+  #end
+  
+  @flight = Flight.first(:avatar_id => params[:choix_avatar],
+                        :mission_id=> params[:choix_mission])
+  
+ 
+  params[:revendication].each_index do |i|
+    fr = FlightResult.create(:flight_avatar_id => params[:choix_avatar],
+                             :flight_mission_id => params[:choix_mission],
+                             :flight_id => @flight.id,
+                             :revendication_id => params[:revendication][i],
+                             :commentaire => params[:info_complementaire][i],
+                             :victoire_id => params[:victoire][i])  
+    end
 
+  redirect '/cr_mission'  
+end
 
 
 get '/admin/avatar' do
