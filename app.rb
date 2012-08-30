@@ -32,6 +32,11 @@ before do
   if request.xhr?
     sleep 1
   end
+  
+  #set hacky session variables
+  session[:autruche] ||= Autruche.first().id
+  session[:campagne] ||= Campagne.first().id
+  
 end
 
 # define routes and actions
@@ -42,9 +47,7 @@ get '/' do
   @title='Liste des Pilotes'
   @js = "home.js"
   
-  #set hacky session variables
-  (session[:autruche]=="") ? session[:autruche]=Autruche.first().id : true
-  (session[:campagne]=="") ? session[:campagne]=Campagne.first().id : true
+
     
   # retrieve required data from db
   @autruches = Autruche.all :order => :id.desc

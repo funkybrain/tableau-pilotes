@@ -58,14 +58,12 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
       <li class="revendication">
         <label>Revendication:</label>
         <select name="revendication">
-          <option value=""> -- </option>
           <% @revendications.each do |r| %>
             <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
           <% end %>
         </select>
         <input class="revendication" type="text" name="info_complementaire" placeholder="infos complementaires"/>
         <select name="victoire">
-          <option value=""> -- </option>
           <% @victoires.each do |v| %>
             <option value="<%= v.id %>"> <%=h v.type %> </option>
           <% end %>          
