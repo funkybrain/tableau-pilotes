@@ -1,47 +1,26 @@
-<div id="links">
-<p>
-<h3>Liens:</h3>
-  <ul>
-    <li> <a href="../admin">Administration de la base</a>
-    <li> <a href="../cr_mission">Formulaire mission (compte rendu)</a>
-    <li> <a href="">Recapitulatif pilote (not active)</a>
-    <li> <a href="">Recapitulatif campagne (not active)</a>
-  </ul>
-</p> 
-</div>
-
-Temporary hack until authentification in place:
-<form class="cmxform" action="/" method="post">  
+<br>
+<form action="/" method="post">  
   <fieldset>
-    <legend>Set session parameters</legend>
-    <ol>
-      <li>
+    <legend>Set session parameters (temp hack until authentification is in place)</legend>
+
         <label> Pilote: </label>
         <select name="choix_autruche">
-        <option value=""> -- </option>
         <% @autruches.each do |a| %>
           <option value="<%= a.id %>"> <%=h a.callsign %> </option>
         <% end %>
         </select>
-      </li>
-      <li>
         <label> Campagne: </label>
         <select name="choix_campagne">
-        <option value=""> -- </option>
         <% @campagnes.each do |c| %>
           <option value="<%= c.id %>"> <%=h c.nom %> </option>
         <% end %>
         </select>
-      </li>
-      <li>
-        <input type="submit" value="Go!" />
-      </li>
-    </ol>
+        <input id="submit_btn" type="submit" value="Go!" />
   </fieldset>
 </form>  
 <p>
 
-<h2>Tableau General</h2>
+<h3>Tableau General</h3>
 <table id="hor-minimalist-a" summary="Main Table">
   <!-- Table header -->
   <thead>

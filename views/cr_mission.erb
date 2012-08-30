@@ -1,22 +1,13 @@
-<div id="links">
-<p>
-  <h2>Liens:</h2>
-  <ul>
-    <li><a href="../">Home</a>
-     
-  </ul>  
-</p> 
-</div>
 
-<h2>Infos</h2>
+<br>
+<h3>Infos</h3>
 
 <div id="info">
 Remplissez le formulaire avec attention. N'oubliez pas, vous pouvez apporter une description plus pr&eacute;cise
 pour chaque revendication. Il est inutile de s&eacute;lectionner la liste "confirm&eacute;e", "probable"
 etc si la revendication n'est pas une victoire a&eacute;rienne.
 </div>
-
-<h2>Formulaire de mission</h2>
+<br>
 
 <!-- ADMIN MISSION -->
 
@@ -72,8 +63,8 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
             <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
           <% end %>
         </select>
-        <input class="revendication" type="text" name="info" placeholder="infos complementaires"/>
-        <select name="vic">
+        <input class="revendication" type="text" name="info_complementaire" placeholder="infos complementaires"/>
+        <select name="victoire">
           <option value=""> -- </option>
           <% @victoires.each do |v| %>
             <option value="<%= v.id %>"> <%=h v.type %> </option>
@@ -87,7 +78,7 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
 </form>  
  
 
-  <h2> Liste des missions prealablement effectues</h2>
+  <h3>Liste des missions pr&eacute;alablement effectu&eacute;es</h3>
   <table id="hor-minimalist-a" summary="Main Table">
     <!-- Table header -->
     <thead>

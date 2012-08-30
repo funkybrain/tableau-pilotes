@@ -1,56 +1,58 @@
 <!doctype html>  
 <html lang="en">
-<head>     
-  <meta charset="utf8">  
-  <title><%= "#{@title} | #{SITE_TITLE}" %></title>  
-  <link href="/style.css" rel="stylesheet">
+
+  <head>     
+    <meta charset="utf8">  
+    <title><%= "#{@title} | #{SITE_TITLE}" %></title>  
+    <link href="/style.css" rel="stylesheet">    
+  </head>
+  
+  <body>
+    <div class="grid">
+      <div class="header">
+        <div class="title">
+          <h3><a href="/"><%= SITE_TITLE %></a><h3>  
+          <h3><%= SITE_DESCRIPTION %></h3>
+        </div>
+        <div class="login">  
+          Campagne: <% if (session[:campagne]) %> <%=h Campagne.get(session[:campagne]).nom %> <% end %>
+          </br>
+          Autruche: AV_<% if (session[:autruche]) %> <%=h Autruche.get(session[:autruche]).callsign %> <% end %></em>      
+        </div>
+      </div>
+      <div class="flash">
+        <% if flash[:notice] %>
+        <p class="notice"><%= flash[:notice] %>
+        <% end %>        
+        <% if flash[:error] %>
+        <p class="error"><%= flash[:error] %>
+        <% end %>
+      </div>
+      <div class="tabnav" id="tab1">
+        <ul id="tabnav">
+        <li class="tab1"><a href="/">Accueil</a></li>
+        <li class="tab2"><a href="../admin">Administration</a></li>
+        <li class="tab3"><a href="../cr_mission">Debrief Mission</a></li>
+        <li class="tab4"><a href="#">Palmares Pilote</a></li>
+        <li class="tab5"><a href="#">Suivi Campagne</a></li>
+        </ul>
+      </div>
+      <div id="main">
+        <br>
+        <%= yield %>
+        <b>
+      </div>
+      <div class="footer">
+      <br>  
+      <small>Une application pour les <a href="http://forum.autruches.org">Autruches</a>.</small></p>  
+      </div>  
+    </div>  
     
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-  <!-- load custom js for each route -->
-  <% if @js %>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <!-- load custom js for each route -->
+    <% if @js %>
     <script type="text/javascript" src="/js/<%= @js %>"></script>
-  <% end %>  
-
-</head>
-
-<body>  
-
-  <div>
-    <h2><a href="/"><%= SITE_TITLE %></a></h2>  
-    <h3><%= SITE_DESCRIPTION %></h3>
-  
-  <em style="color: blue">
-    Campagne en cours:
-    <% if (session[:campagne]) %>
-      <%=h Campagne.get(session[:campagne]).nom %>
-    <% end%>
-  </em>
-  <br>
-  <em style="color: blue">
-    Autruche connectee: AV_
-    <% if (session[:autruche]) %>
-      <%=h Autruche.get(session[:autruche]).callsign %>
-    <% end %></em>
-  <br>
-    
-
-  <div>
-    <% if flash[:notice] %>
-      <p class="notice"><%= flash[:notice] %>
-    <% end %>
-    
-    <% if flash[:error] %>
-      <p class="error"><%= flash[:error] %>
-    <% end %>
-  </div>
-    
-  <%= yield %>
-  
-  <footer>
-    <p>
-    <p><small>Une application pour les <a href="http://forum.autruches.org">Autruches</a>.</small></p>  
-  </footer>  
-
-</body>
+    <% end %>  
+  </body>
 
 </html>  

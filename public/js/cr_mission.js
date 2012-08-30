@@ -1,5 +1,7 @@
 $(function(){
     
+    $('div.tabnav').attr({'id':'tab3'});
+    
     $('a#add').click(function(e){
             e.preventDefault();
             var $revendication = $('form li.revendication:first');
