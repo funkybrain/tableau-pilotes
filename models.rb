@@ -33,7 +33,7 @@ end
 
 # Table: Avatar
 # -------------
-# Liste des avatars associs aux pilotes
+# Liste des avatars associÅ½s aux pilotes
 # ----------------------------------------
 # id | nom | prenom | statut | autruche_id
 # ----------------------------------------
@@ -84,7 +84,7 @@ end
 
 # Table: Mission
 # -------------
-# Liste des missions associes aux campagnes
+# Liste des missions associÅ½es aux campagnes
 # -----------------------------------------------------------
 # id (PK)| numero | nom | briefing | debriefing | campagne_id 
 # -----------------------------------------------------------
@@ -142,7 +142,7 @@ end
 
 # Table: Reward
 # -------------
-# enregistre l'attribution de mdailles et citations pour chaque pilote
+# enregistre l'attribution de mÅ½dailles et citations pour chaque pilote
 # ------------------------------
 # id | id_flight | id_decoration
 # ------------------------------
@@ -167,7 +167,7 @@ end
 
 # Table: Decoration
 # -----------------
-# Liste des diverses mdailles et citations attribuables aux avatars/pilotes
+# Liste des diverses mÅ½dailles et citations attribuables aux avatars/pilotes
 # --------------------
 # id | nom | nation_id
 # --------------------
@@ -258,7 +258,7 @@ end
 
 # Table: StatutFinMission
 # -------------------
-# Etat du pilote renseign en fin de mission; e.g. Eject
+# Etat du pilote renseigne en fin de mission; e.g. Ejecte
 # --------------
 # id | statut |
 # --------------
@@ -274,7 +274,7 @@ end
 
 # Table: Revendication
 # -------------------
-# Type de revendication renseigne dans le formulaire mission, e.g. Attaque au sol
+# Type de revendication renseignÅ½e dans le formulaire mission, e.g. Attaque au sol
 # ----------------
 # id | descriptif |
 # ----------------
@@ -292,7 +292,7 @@ end
 
 # Table: Revendication
 # -------------------
-# Type de victoire renseige dans le formulaire mission, e.g. Probable
+# Type de victoire renseigÅ½e dans le formulaire mission, e.g. Probable
 # -----------
 # id | type |
 # -----------
@@ -308,7 +308,7 @@ end
 
 # Table: Nation
 # -------------------
-# Liste des pays associs aux avions, dcorations et grades
+# Liste des pays associÅ½s aux avions, dÅ½corations et grades
 # -----------
 # id | pays |
 # -----------
@@ -337,7 +337,7 @@ class Monture
   property :id,          Serial
   property :modele,      Text, :required => true
   #property :image,       Binary
-  # pour diffrencier chasse/attaque au sol?
+  # pour diffÅ½rencier chasse/attaque au sol?
   property :specialite,  Integer, :required => false
   
   belongs_to :nation, :required => false

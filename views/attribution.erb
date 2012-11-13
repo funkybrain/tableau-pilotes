@@ -14,6 +14,8 @@
     </select>    
     <input type="submit" value="Go!"/>
 
+<br></br>
+
   <h3> Liste des Avatars et Mission de:<em style="color: red"> <%=h @autruche.callsign %> </em> </h3>
   
   <table id="hor-minimalist-a" summary="Main Table">
@@ -52,13 +54,15 @@
           <%=h f.mission.nom %>
         </td>
         <td>
-          <%=h f.statutfinmission.statut %>
+          <%=h f.statut_fin_mission.statut %>
         </td>
         <td>
           <% if Reward.byFlight(f.id) %>
-              <% Reward.byFlight(f.id).each do |reward| %>
+            <% Reward.byFlight(f.id).each do |reward| %>
                 <%=h Decoration.get(reward.decoration_id).nom %>
-              <% end %>
+            <% end %>
+          <% else %>
+            aucune decoration    
           <% end %>            
         </td>
         

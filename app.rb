@@ -18,7 +18,7 @@ set :root, File.dirname(__FILE__)
 SITE_TITLE ||= "Le Tableau des Pilotes"
 SITE_DESCRIPTION ||= "Le QG des campagnes autruchiennes"
 
-#### Helper Methods ####
+# HELPER METHODS
 
 helpers do
   # escape html to avoid XSS attacks
@@ -28,27 +28,25 @@ helpers do
 end
 
 # fake slow net connection for ajax requests
+# and set hacky session variable
+
 before do
   if request.xhr?
     sleep 1
-  end
+  end  
   
-  #set hacky session variables
+  #if session coookies are empty, set them
   session[:autruche] ||= Autruche.first().id
   session[:campagne] ||= Campagne.first().id
-  
 end
 
-# define routes and actions
+# DEFINE ROUTES AND ACTIONS
 
-# GET '/'
 get '/' do
   # set page title for display in browser tab
   @title='Liste des Pilotes'
   @js = "home.js"
-  
-
-    
+      
   # retrieve required data from db
   @autruches = Autruche.all :order => :id.desc
   @campagnes = Campagne.all :order => :id.desc
@@ -61,7 +59,8 @@ get '/' do
   # render view
   erb :home
 end
-# POST '/'
+
+# set active pilot and campaign
 post '/' do
   session[:autruche] = params[:choix_autruche]
   session[:campagne] = params[:choix_campagne]  
@@ -71,9 +70,7 @@ post '/' do
   redirect '/'
 end
 
-
-
-# GET '/admin'
+# Load main admin page
 get '/admin' do
   @title='Gestion Campagne'
   @js = "admin.js"
@@ -82,8 +79,8 @@ get '/admin' do
 end
 
 
+### ATTRIBUTIONS MEDAILLES ET CITATIONS:
 
-# GET '/admin/attribution'
 # choose which pilot to reward
 get '/admin/attribution' do
   @title='Recompenses'
@@ -92,15 +89,15 @@ get '/admin/attribution' do
   
   erb :admin
 end
-# POST '/admin/attribution'
+
 # redirects to individual pilot page to set pilot rewards
 post '/admin/attribution' do
   x = params[:choix_autruche]
   uri = "/admin/attribution/#{x}"
   redirect to(uri)
 end
-# POST '/admin/attribution/:id'
-# set pilot rewards
+
+# set individual pilot rewards
 get '/admin/attribution/:id' do
   @page="Attribution"
   @id = params[:id]
@@ -118,10 +115,8 @@ get '/admin/attribution/:id' do
       Reward.byFlight(f.id).each do |reward|
         puts Decoration.get(reward.decoration_id).nom
       end       
-    end
-    
+    end    
   end
-  
   
   erb :attribution
 end
@@ -141,8 +136,8 @@ post '/admin/attribution/:id' do
 end
 
 
+### AJOUTER MISSIONS A UNE CAMPAGNE:
 
-# GET '/admin/mission'
 # formulaire pour ajouter une mission à la base
 get '/admin/mission' do
   @title='Gestion Mission'
@@ -165,7 +160,7 @@ get '/admin/mission' do
   erb :admin_mission , :layout => !request.xhr?
   
 end
-# POST '/admin/mission/new'
+
 # Enregistrer la mission dans la base
 post '/admin/mission' do
 
@@ -181,9 +176,8 @@ post '/admin/mission' do
   redirect "/admin/mission?campagne=#{params[:campagne]}"
 end
 
+### AJOUTER UNE CAMPAGNE:
 
-
-# admin route for campaign manager
 get '/admin/campagne' do
   @page='campagne'
   @title='Gestion Campagne'
@@ -196,6 +190,13 @@ get '/admin/campagne' do
   
   erb :admin
 end
+
+post '/admin/campagne' do
+  n = Campagne.first_or_create(:nom => params[:nom], :descriptif => params[:descriptif]) 
+  redirect '/admin/campagne'
+end
+
+### AJOUTER UN PAYS
 
 get '/admin/pays' do
   @page='pays'
@@ -210,6 +211,14 @@ get '/admin/pays' do
   erb :admin
 end
 
+post '/admin/pays' do
+  n = Nation.first_or_create(:pays => params[:pays])
+  puts n.inspect
+  redirect '/admin/pays'
+end
+
+### AJOUTER UN GRADE
+
 get '/admin/grade' do
   @page='grade'
   @title='Gestion Grade'
@@ -223,6 +232,16 @@ get '/admin/grade' do
   erb :admin
 end
 
+post '/admin/grade' do
+  nation = Nation.get(params[:choix_nation])
+  n = nation.grades.new(:nom => params[:nom])
+  nation.save
+
+  redirect '/admin/grade'
+end
+
+### AJOUTER UNE AUTRUCHE
+
 get '/admin/autruche' do
   @page='autruche'
   @title='Gestion Autruches'
@@ -234,10 +253,15 @@ get '/admin/autruche' do
   end
   
   erb :admin
-  
 end
 
-# GET '/cr_mission'
+post '/admin/autruche' do
+  n = Autruche.first_or_create(:callsign => params[:callsign], :prenom => params[:prenom], :nom => params[:nom])
+  redirect '/admin/autruche'
+end
+
+### AJOUTER UN COMPTE RENDU DE MISSION
+
 # Remplissage du compte rendu de mission
 get '/cr_mission' do
   @title='Formulaire Mission'
@@ -262,10 +286,10 @@ get '/cr_mission' do
     flash.now[:error] = "Aucunes missions effectues par ce pilote"
   end
   
-  erb :cr_mission
-  
+  erb :cr_mission  
 end
-# POST '/cr_mission'
+
+
 # Enregistrer les resultats d'une mission
 post '/cr_mission' do
 
@@ -290,8 +314,9 @@ post '/cr_mission' do
 
   redirect '/cr_mission'  
 end
-# POST '/cr_mission/revendication'
-# Enregistrer les revebndications liées à une mission
+
+
+# Enregistrer les revendications liées à une mission
 post '/cr_mission/revendication' do
   #
   #params[:revendication].each_index do |i|
@@ -320,6 +345,8 @@ post '/cr_mission/revendication' do
 end
 
 
+### AJOUTER UN AVATAR
+
 get '/admin/avatar' do
   @page='avatar'
   @title='Gestion Avatar'
@@ -331,35 +358,8 @@ get '/admin/avatar' do
     flash[:error] = "Liste des avatars vide"
   end
   
-  erb :admin
-  
+  erb :admin  
 end
-
-post '/admin/campagne' do
-  n = Campagne.first_or_create(:nom => params[:nom], :descriptif => params[:descriptif]) 
-  redirect '/admin/campagne'
-end
-
-post '/admin/pays' do
-  n = Nation.first_or_create(:pays => params[:pays])
-  puts n.inspect
-  redirect '/admin/pays'
-end
-
-post '/admin/grade' do
-  nation = Nation.get(params[:choix_nation])
-  n = nation.grades.new(:nom => params[:nom])
-  nation.save
-
-  redirect '/admin/grade'
-end
-
-post '/admin/autruche' do
-  n = Autruche.first_or_create(:callsign => params[:callsign], :prenom => params[:prenom], :nom => params[:nom])
-  redirect '/admin/autruche'
-end
-
-
 
 post '/admin/avatar' do
   autruche = Autruche.get(params[:choix_autruche])
@@ -374,3 +374,16 @@ post '/admin/avatar' do
   redirect '/admin/avatar'
 end
 
+# TODO: palmares pilote
+# voir image
+get '/pilote' do
+
+  erb :pilote
+end
+
+# TODO: suivi campagne
+# voir image
+get '/campagne' do
+
+  erb :campagne
+end
