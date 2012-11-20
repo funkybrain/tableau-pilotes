@@ -47,10 +47,14 @@ get '/' do
   @title='Liste des Pilotes'
   @js = "home.js"
       
-  # retrieve required data from db
+  # retrieve data to set session parameters
   @autruches = Autruche.all :order => :id.desc
   @campagnes = Campagne.all :order => :id.desc
   
+  # get all flights for campaign in session
+  @flights = Flight.byCampaign(session[:campagne])
+  @mission_count = Flight.byAutruche(1).count
+
   # display flash messages
   if @autruches.empty?
     flash.now[:error] = 'Aucun pilote dans la base!'
@@ -273,9 +277,13 @@ get '/cr_mission' do
   # only call avatars for pilot in session that is alive (active)
   @avatar = Avatar.first(:autruche_id => session[:autruche], :statut => true)
   
-  # retrieve all flights associated with current avatar
-  @flights = Flight.all(:avatar_id => @avatar.id, :order=>:created_at.asc)
-  
+  # retrieve all flights associated with current avatar for current campagne
+  @flights = Flight.all(:avatar_id => @avatar.id,
+                        :order=>:created_at.asc)
+                   .all(Flight.mission.campagne.id => session[:campagne])
+  # this last line above is very dirty, need to find something more elegant
+  # I'm getting the sinking sensation that my data structure is really shit
+
   @montures = Monture.all :order=>:id.asc
   @roles = Role.all :order=>:id.asc
   @statuts = StatutFinMission.all :order=>:id.asc

@@ -135,6 +135,11 @@ class Flight
   def self.byAutruche(id)
     all(Flight.avatar.autruche.id => id)
   end
+
+  # retrieve all flights for campaign in session
+  def self.byCampaign(campaignId)
+    all(Flight.mission.campagne.id => campaignId)
+  end
   
 end
 

@@ -40,19 +40,19 @@
   
   <!-- Table body -->
   <tbody>
-    <% @autruches.each do |autruche| %>
+    <% @flights.each do |flight| %>
     <tr>
       <td>
-        Grade
+        flight_id: <%= flight.id %>
       </td>
       <td>
-        <%=h autruche.callsign %>
+        <%= flight.avatar.autruche.callsign %>
       </td>
       <td>
-        Nbr de missions
+        <%= flight.mission.nom %>
       </td>
       <td>
-        Dernier avion
+        <%= flight.monture.modele %>
       </td>
       <td>
         Victoires aeriennes  
