@@ -6,8 +6,9 @@ require 'sinatra/flash'
 require 'sinatra/reloader'
 
 # include libraries needed for main app
-require './models.rb'
+require './db_models.rb'
 require './seed.rb'
+require './tableau_general'
 
 # application settings
 enable :sessions
@@ -27,6 +28,13 @@ helpers do
 
 end
 
+# debug clear session
+get '/clear' do
+    session[:autruche] = nil
+    session[:campagne] = nil
+    puts "session cleared"
+end
+
 # fake slow net connection for ajax requests
 # and set hacky session variable
 
@@ -38,6 +46,9 @@ before do
   #if session coookies are empty, set them
   session[:autruche] ||= Autruche.first().id
   session[:campagne] ||= Campagne.first().id
+  # debug
+  # puts "autruche: " + session[:autruche].to_s
+  # puts "campagne: " + session[:campagne].to_s
 end
 
 # DEFINE ROUTES AND ACTIONS
@@ -110,11 +121,10 @@ get '/admin/attribution/:id' do
   @autruche = Autruche.get(params[:id])
   @flights = Flight.byAutruche(params[:id])
   
-  puts @flights.inspect
   
   # debug
   @flights.each do |f|
-    puts f.id  
+      
     if Reward.byFlight(f.id)
       Reward.byFlight(f.id).each do |reward|
         puts Decoration.get(reward.decoration_id).nom
@@ -308,7 +318,8 @@ post '/cr_mission' do
                                    },
                                   {:monture_id => params[:choix_monture],
                                    :role_id => params[:choix_role],
-                                   :temps_vol => temps_vol,
+                                   :tps_vol_hr => params[:tps_vol_hr],
+                                   :tps_vol_min => params[:tps_vol_min],
                                    :statut_fin_mission_id => params[:choix_statut]
                                    })    
   
