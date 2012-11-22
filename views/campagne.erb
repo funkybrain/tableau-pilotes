@@ -1,3 +1,62 @@
-Choisir une mission pour la campagne en cours
-et lister chaque resultat par pilote
+## TODO: Choisir une mission pour la campagne en cours et lister chaque resultat par pilote
+
+
+<h3>Compte Rendu de campagne de la mission #
+<%= @missnum %>-"<%= Mission.get(@missnum).nom%>"
+</h3>
+<table id="hor-minimalist-a" summary="Main Table">
+  <thead>
+    <tr>
+      <th scope="col">Grade</th>
+      <th scope="col">Autruche</th>
+      <th scope="col">Avion pilote</th>
+      <th scope="col">Victoires aeriennes</th>
+      <th scope="col">Missions d'attaque</th>
+      <th scope="col">Temps de vol</th>
+      <th scope="col">Statut en fin de mission</th>
+      <th scope="col">Dernier role du pilote</th>
+      <th scope="col">Decorations</th>
+    </tr>
+  </thead>
+  
+  <!-- Table body -->
+  <tbody>
+  <%  @flights.each do |f| %>
+    <tr>
+      <td>
+      	<%= f.avatar.promotions.last.grade.nom %>
+      </td>
+      <td>
+        <%= f.avatar.autruche.callsign %>
+      </td>
+      <td>
+        <%= Monture.get(f.monture_id).modele %>
+      </td>
+      <td>
+        <%= f.flight_results.victoires.count(:id => 1) %>
+      </td>
+      <td>
+        <%= f.flight_results.victoires.count(:id => 2) %>
+      </td>
+      <td>
+        <%= f.tps_vol_hr.to_s + "h" + f.tps_vol_min.to_s %>
+      </td>
+      <td>
+        <%= f.statut_fin_mission.statut %>
+      </td>
+      <td>
+        <%= Role.get(f.role_id).type %>
+      </td>
+      <td>
+        <% f.rewards.each do |r| %>
+        	<%= r.decoration.nom %>
+        <% end %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>  
+</table>
+
+
+</br>
 <img src="../img/suivi_campagne.png">

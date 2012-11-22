@@ -149,6 +149,11 @@ class Flight
     all(Flight.mission.campagne.id => campaignId)
   end
   
+  # retrieve all flights for specific mission
+  def self.byMission(missionId)
+    all(Flight.mission_id => missionId)
+  end
+
 end
 
 

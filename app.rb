@@ -400,16 +400,42 @@ post '/admin/avatar' do
   redirect '/admin/avatar'
 end
 
-# TODO: palmares pilote
-# voir image
+### PALMARES PILOTE
+
 get '/pilote' do
+
+  # get all missions for campagne and autruche in session
+  @flights = Flight.byAutruche(session[:autruche]).byCampaign(session[:campagne]).all(:order => :avatar_id.asc)
+  
+  # find all unique avatars in returned collection and store their id's in an array @unique_avatars
+  @unique_avatars = @flights.uniq {|x| x.avatar_id}.inject([]) do |result, element|
+  result << element.avatar_id
+  end
+  
+  # debug
+  # print @unique_avatars
+  # puts ""
+  # @flights.each {|f| p f}
+  # @unique_avatars.each do |aid|
+  #   puts aid
+  #   print @flights.find_all{ |f| f.avatar_id == aid }.each do |f|
+  #     puts f.avatar_id
+  #     puts f.inspect
+  #   end
+  # end    
 
   erb :pilote
 end
 
-# TODO: suivi campagne
-# voir image
-get '/campagne' do
+### SUIVI CAMPAGNE
 
+get '/campagne' do
+  # get all missions for campagne in session
+  # for now hardwire mission, later must be selectable as dropdown
+  @missnum = 1
+  @flights = Flight.byCampaign(session[:campagne]).byMission(@missnum).all(:order => :avatar_id.asc)
+  
   erb :campagne
 end
+
+
