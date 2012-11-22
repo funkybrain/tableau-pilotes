@@ -33,49 +33,46 @@
       <th scope="col">Missions d'attaque</th>
       <th scope="col">Temps de vol total</th>
       <th scope="col">Dernier role du pilote</th>
-      <th scope="col">Citations</th>
-      <th scope="col">Medailles</th>     
+      <th scope="col">Decorations</th>
     </tr>
   </thead>
   
   <!-- Table body -->
   <tbody>
-    <% @flights.each do |flight| %>
+    <% @tabgen.each do |aut| %>
     <tr>
       <td>
-        flight_id: <%= flight.id %>
+        <%= Grade.get(aut.grade_id).nom %>
       </td>
       <td>
-        <%= flight.avatar.autruche.callsign %>
+        <%= Autruche.get(aut.autruche_id).callsign %>
       </td>
       <td>
-        <%= flight.mission.nom %>
+        <%= aut.nbr_missions %>
       </td>
       <td>
-        <%= flight.monture.modele %>
+        <%= Monture.get(aut.monture_id).modele %>
       </td>
       <td>
-        Victoires aeriennes  
+        <%= aut.nbr_vict %>
       </td>
       <td>
-        Missions attaque
+        <%= aut.nbr_atck_sol %>
       </td>
       <td>
-        Temps de vol
+        <%= aut.tps_vol_tot %>
       </td>
       <td>
-        Dernier Role
+        <%= Role.get(aut.role_id).type %>
       </td>
       <td>
-        Citations
-      </td>
-      <td>
-        Medailles
+        <%= aut.palmares %>
       </td>
     </tr>
     <% end %>
   </tbody>  
 </table>
+</br>
 <div>
   Placeholder format
   <img src="../img/tab_gen.png">

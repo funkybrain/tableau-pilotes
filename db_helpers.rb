@@ -148,4 +148,6 @@ class Role
   property :id,   Serial
   property :type, Text, :required=> true
   
+  # has n, :flights
 end
+

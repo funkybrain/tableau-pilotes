@@ -62,9 +62,9 @@ get '/' do
   @autruches = Autruche.all :order => :id.desc
   @campagnes = Campagne.all :order => :id.desc
   
+
   # get all flights for campaign in session
-  @flights = Flight.byCampaign(session[:campagne])
-  @mission_count = Flight.byAutruche(1).count
+  @tabgen = TabGen.all()
 
   # display flash messages
   if @autruches.empty?
@@ -310,9 +310,9 @@ end
 
 # Enregistrer les resultats d'une mission
 post '/cr_mission' do
-
-  (params[:temps_vol] == "") ? temps_vol="00:00":temps_vol=params[:temps_vol]
   
+  # trim leading zeros on integers otherwise you will get an error
+
   flight = Flight.first_or_create({:avatar_id => params[:choix_avatar],
                                    :mission_id => params[:choix_mission]
                                    },
@@ -326,6 +326,13 @@ post '/cr_mission' do
 
   #TODO: set avatar status to false if statut_fin_mission = mort or capture
   # check warpigs message on subject
+
+  # update TabGen to account for new missions
+  updateOK = TabGen.updateTable(session[:autruche], session[:campagne])
+  puts updateOK.inspect
+
+
+
 
   if flight
     flash[:error] = "Mission deja remplie"
