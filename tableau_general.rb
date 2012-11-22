@@ -13,6 +13,7 @@ class	TabGen
 	belongs_to :monture
 	belongs_to :role
 	belongs_to :autruche, :key => true
+	belongs_to :campagne, :key => true
 
 	def self.updateTable(autrucheId, campaignId)
 		# todo: call each method and update
@@ -26,7 +27,7 @@ class	TabGen
 		dmont = derniereMonture(autrucheId, campaignId)
 		gpil = gradePilote(autrucheId, campaignId)
 
-		row = first_or_new(:autruche_id => autrucheId)
+		row = first_or_new(:autruche_id => autrucheId, :campagne_id => campaignId)
 
 		row.attributes = {
 	                       	:nbr_missions => n_mis,

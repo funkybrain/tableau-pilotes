@@ -64,7 +64,7 @@ get '/' do
   
 
   # get all flights for campaign in session
-  @tabgen = TabGen.all()
+  @tabgen = TabGen.all(:campagne_id => session[:campagne])
 
   # display flash messages
   if @autruches.empty?
@@ -372,6 +372,14 @@ end
 
 
 ### AJOUTER UN AVATAR
+
+=begin TODO: add rules for avatar lifecycle
+* canot create avatar for pilot who still has a live one
+* have flash message on home page if there is a pilot with no avatar
+in current campaign
+* crap, what happend if warpig wants to rescusite an avatr?
+* how do you give rewards to a dead avatar? current logic in cr-mission is flawed
+=end
 
 get '/admin/avatar' do
   @page='avatar'
