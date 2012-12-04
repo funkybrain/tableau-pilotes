@@ -69,15 +69,16 @@ class Avatar
     
   end
 
-  # as well as new avatar that hasn't flown yet
+  # as well as all avatars that haven't flown yet
   def self.notFlown(id)
+    @arr =[]
     self.byAutruche(id).each do |av|
-      if av.flights.count == 0
-        return all(:id => av.id)
+      if av.flights.empty?
+        @arr << av.id
       end
-    end
-
-
+    end  
+   return all(:id => @arr)  
+   #return @arr 
   end
 
   # get all avatars for all pilots in campaign id

@@ -15,6 +15,7 @@ Attention, il ne peut y avoir qu'un seul avatar avec le statut "actif".</p>
 			<th scope-"col">Callsign</th>
 			<th scope="col">Prenom</th>
 			<th scope="col">Nom</th>
+			<th scope="col">Campagne</th>
 			<th scope="col">Statut</th>
 			<th scope="col">Action</th>
 		</tr>
@@ -35,6 +36,13 @@ Attention, il ne peut y avoir qu'un seul avatar avec le statut "actif".</p>
 		</td>
 		<td>
 		    <%=h avatar.nom %>
+		</td>
+		<td>
+			<% if avatar.flights.empty? %>
+				! never flown !
+			<% else %> 
+				<%=h avatar.flights.mission.campagne.first().nom %>
+			<% end %>
 		</td>
 		<td>
 		    <% if avatar.statut == true %>
@@ -66,7 +74,10 @@ Attention, il ne peut y avoir qu'un seul avatar avec le statut "actif".</p>
 			<input type="text" name="nom" placeholder="nom"/>      
 		</td>
 		<td>
-		  actif
+			! never flown !
+		</td>
+		<td>
+		  -
 		</td>
 		<td>
 			<input type="submit" value="Ajouter Avatar!"> 

@@ -206,6 +206,9 @@ get '/admin/campagne' do
 end
 
 post '/admin/campagne' do
+
+  # TODO: before creating a new campaign, set all current campaign avatars to inactive
+  # and then set last campaign to inactive, and new campaign to active
   n = Campagne.first_or_create(:nom => params[:nom], :descriptif => params[:descriptif]) 
   redirect '/admin/campagne'
 end
@@ -397,6 +400,7 @@ get '/admin/avatar' do
   @campagne = Campagne.get(session[:campagne])
   @autruche = Autruche.get(session[:autruche])
 
+  # @avatars = Avatar.byAutruche(session[:autruche])
   @old_avatars = Avatar.byAutruche(session[:autruche]).byCampaign(session[:campagne])
   @new_avatar = Avatar.notFlown(session[:autruche])
   @avatars = @old_avatars + @new_avatar
