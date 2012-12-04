@@ -1,0 +1,52 @@
+<!-- ADMIN AVATAR-->
+<h2>Gestion des avatars</h2>
+<p>Editer le statut d'un avavatar, ou ajouter un nouvel avatar.
+Attention, il ne peut y avoir qu'un seul avatar avec le statut "actif".</p>
+<br>
+<h3> Modification d'un avatar</h3>
+
+<table id="hor-minimalist-a" summary="Main Table">
+<!-- Table header -->
+	<thead>
+		<tr>
+			<th scope="col">id</th>
+			<th scope-"col">Callsign</th>
+			<th scope="col">Prenom</th>
+			<th scope="col">Nom</th>
+			<th scope="col">Statut</th>
+			<th scope="col">Action</th>
+		</tr>
+	</thead>
+
+<!-- Table body -->
+	<tbody>
+ 
+	<tr>
+		<td>
+		  <%= @avatar.id %>
+		</td>
+		<td>
+		  <%=h @avatar.autruche.callsign %>
+		</td>
+
+
+		<form action='/admin/avatar/<%= @id %>' method="post">
+		    <td>
+		    	<input type="text" name="prenom" value='<%=h @avatar.prenom %>'/>
+		    </td>
+		    <td>
+		    	<input type="text" name="nom" value='<%=h @avatar.nom %>'/> 		
+		    </td>
+		    <td>
+			<select name="statut">
+		  		<option value=true> actif </option>
+		  		<option value=false> inactif </option>
+		  	</select>
+		    </td>
+		    <td>
+		  	    <input type="submit" value="Modifier Avatar!">  
+		    </td>
+		</form>
+	</tr>
+	</tbody>  
+</table>

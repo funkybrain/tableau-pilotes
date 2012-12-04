@@ -287,6 +287,14 @@ get '/cr_mission' do
   # only call avatars for pilot in session that is alive (active)
   @avatar = Avatar.first(:autruche_id => session[:autruche], :statut => true)
   
+  if @avatar == nil
+    # aucun avatar actif pour cette autruche
+    # balancer un message d'erreur et rediriger sur la creation d'avatar
+    flash[:error] = "Aucun avatar actif pour ce pilote"
+    redirect '../admin/avatar'
+  end
+
+
   # retrieve all flights associated with current avatar for current campagne
   @flights = Flight.all(:avatar_id => @avatar.id,
                         :order=>:created_at.asc)
@@ -378,35 +386,62 @@ end
 * have flash message on home page if there is a pilot with no avatar
 in current campaign
 * crap, what happend if warpig wants to rescusite an avatr?
-* how do you give rewards to a dead avatar? current logic in cr-mission is flawed
+* how do you give rewards to a dead avatar? current logic in cr-mission is flawed?
+  
 =end
 
 get '/admin/avatar' do
-  @page='avatar'
+
   @title='Gestion Avatar'
-  
-  @autruches = Autruche.all :order=>:callsign.asc
-  @avatars = Avatar.all :order=> :id.asc
-  
+
+  @campagne = Campagne.get(session[:campagne])
+  @autruche = Autruche.get(session[:autruche])
+
+  @old_avatars = Avatar.byAutruche(session[:autruche]).byCampaign(session[:campagne])
+  @new_avatar = Avatar.notFlown(session[:autruche])
+  @avatars = @old_avatars + @new_avatar
+
+  # check if all avatars are inactive to enable adding a new one
+  @can_add = true
+  @avatars.each do |a|
+   if a.statut == true
+    @can_add = false
+   end 
+  end  
+
   if @avatars.empty?
-    flash[:error] = "Liste des avatars vide"
+    flash.now[:error] = "Aucun avatar pour ce pilote et/ou cette campagne"
   end
   
-  erb :admin  
+  erb :avatar
 end
 
 post '/admin/avatar' do
-  autruche = Autruche.get(params[:choix_autruche])
-  
-  n = autruche.avatars.new( :prenom => params[:prenom],
-                            :nom => params[:nom]
-                            )
-  
+
+  autruche = Autruche.get(session[:autruche])
+  n = autruche.avatars.new( :prenom => params[:prenom], :nom => params[:nom] )
   autruche.save
-  
   
   redirect '/admin/avatar'
 end
+
+get '/admin/avatar/:id' do
+  @title='Modification Avatar'
+  @id = params[:id]
+  puts @id
+
+  @avatar = Avatar.get(params[:id])
+
+  erb :avatar_edit
+end  
+
+post '/admin/avatar/:id' do
+
+  n = Avatar.get(params[:id]).update( :prenom => params[:prenom], :nom => params[:nom], :statut => params[:statut] )
+
+  redirect '/admin/avatar'
+end  
+
 
 ### PALMARES PILOTE
 

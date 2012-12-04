@@ -1,0 +1,82 @@
+<!-- ADMIN AVATAR-->
+<h2>Gestion des avatars</h2>
+<p>Editer le statut d'un avavatar, ou ajouter un nouvel avatar.
+Attention, il ne peut y avoir qu'un seul avatar avec le statut "actif".</p>
+<br>
+<h3> Liste des Avatars du pilote [<%=h @autruche.callsign%>] pour la campagne [<%=h @campagne.nom%>]
+
+</h3>
+
+<table id="hor-minimalist-a" summary="Main Table">
+<!-- Table header -->
+	<thead>
+		<tr>
+			<th scope="col">id</th>
+			<th scope-"col">Callsign</th>
+			<th scope="col">Prenom</th>
+			<th scope="col">Nom</th>
+			<th scope="col">Statut</th>
+			<th scope="col">Action</th>
+		</tr>
+	</thead>
+
+<!-- Table body -->
+	<tbody>
+	<% @avatars.each do |avatar| %> 
+	<tr>
+		<td>
+		  <%= avatar.id %>
+		</td>
+		<td>
+		  <%=h avatar.autruche.callsign %>
+		</td>
+		<td>
+		    <%=h avatar.prenom %>
+		</td>
+		<td>
+		    <%=h avatar.nom %>
+		</td>
+		<td>
+		    <% if avatar.statut == true %>
+		    	actif
+		    <% else %>
+		    	inactif
+		    <% end %>
+		</td>
+		<td>
+		    <span><a href="avatar/<%= avatar.id %>">[edit]</a></span>  
+		</td>
+	</tr>
+	<% end %>
+
+
+	<% if @can_add %>
+	<tr>
+		<td>
+		  -
+		</td>
+		<td>
+		  <%=h @autruche.callsign %>
+		</td>
+		<form action="/admin/avatar" method="post">
+		<td>
+			<input type="text" name="prenom" placeholder="prenom"/>
+		</td>
+		<td>
+			<input type="text" name="nom" placeholder="nom"/>      
+		</td>
+		<td>
+		  actif
+		</td>
+		<td>
+			<input type="submit" value="Ajouter Avatar!"> 
+		</td>
+		</form>
+	</tr>	
+	<% end %>
+	</tbody>  
+</table>
+
+<% if !@can_add %>
+<p>note: Il existe un avatar actif. Pour creer un nouvel avatar, tous doivent etrent rendus inactifs</p>
+<%end%>

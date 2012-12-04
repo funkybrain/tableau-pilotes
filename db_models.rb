@@ -39,7 +39,7 @@ end
 
 # Table: Avatar
 # -------------
-# Liste des avatars associŽs aux pilotes
+# Liste des avatars associes aux pilotes
 # ----------------------------------------
 # id | nom | prenom | statut | autruche_id
 # ----------------------------------------
@@ -62,6 +62,29 @@ class Avatar
   # they don't create additional columns in the table
   has n, :missions,    :through => :flights
   has n, :grades,      :through => :promotions
+
+  #get all avatars for given pilot in all campaigns
+  def self.byAutruche(id)
+    all( Avatar.autruche_id => id )
+    
+  end
+
+  # as well as new avatar that hasn't flown yet
+  def self.notFlown(id)
+    self.byAutruche(id).each do |av|
+      if av.flights.count == 0
+        return all(:id => av.id)
+      end
+    end
+
+
+  end
+
+  # get all avatars for all pilots in campaign id
+  def self.byCampaign(id)
+    all( Avatar.flights.mission.campagne_id => id )
+    
+  end
  
 end
 
