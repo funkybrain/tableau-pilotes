@@ -16,12 +16,23 @@ $(function(){
   $('.confirm').hide();
 
   // refresh revendication mission dropdown if change mission dropdown
-  //$('form#mission select[name="choix_mission"]').change(function() {
+  // $('form#mission select[name="choix_mission"]').change(function() {
   //  var option = $(this).val();
   //  $('form#revendication select').val(option);
-  //});
+  // });
     
-    
+  // change victoire type based on revendication
+  // only victoire aeriennes should have choices other than 'confirmee'
+  // $('select.revendication').change(function() { 
+  //   var rev_id = $('this').val();
+  //   var option = $('<option></option>').attr("value", "1").text("Confirme");
+  //   if (rev_id !==1) {
+  //     $('select#victoire').empty().append(option);
+  //   };
+  //   // todo: reset to default values if rev_id === 1
+  // });
+
+
     $('a#add').click(function(e){
             e.preventDefault();
             var $revendication = $('form#revendication li.revendication:first');

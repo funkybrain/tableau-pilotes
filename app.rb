@@ -61,7 +61,13 @@ get '/' do
   # retrieve data to set session parameters
   @autruches = Autruche.all :order => :id.desc
   @campagnes = Campagne.all :order => :id.desc
-  
+  @nation = Nation.get(Campagne.get(session[:campagne]).nation_id).slug + '/'
+
+  # update TabGen - this is a bad hack because i still havent figured out
+  # when i should update TabGen.
+  if Autruche.get(session[:autruche]).avatars.flights.all().count > 0
+    updateOK = TabGen.updateTable(session[:autruche], session[:campagne])
+  end
 
   # get all flights for campaign in session
   @tabgen = TabGen.all(:campagne_id => session[:campagne])
@@ -299,11 +305,14 @@ get '/cr_mission' do
 
 
   # retrieve all flights associated with current avatar for current campagne
-  @flights = Flight.all(:avatar_id => @avatar.id,
-                        :order=>:created_at.asc)
-                   .all(Flight.mission.campagne.id => session[:campagne])
+  # @flights = Flight.all(:avatar_id => @avatar.id,
+  #                       :order=>:created_at.asc)
+  #                  .all(Flight.mission.campagne.id => session[:campagne])
   # this last line above is very dirty, need to find something more elegant
   # I'm getting the sinking sensation that my data structure is really shit
+
+  # retieve all flights for current pilot and campaign
+  @flights = Flight.byAutruche(session[:autruche]).byCampaign(session[:campagne])
 
   @montures = Monture.all :order=>:id.asc
   @roles = Role.all :order=>:id.asc
@@ -340,9 +349,9 @@ post '/cr_mission' do
 
   # update TabGen to account for new missions
   updateOK = TabGen.updateTable(session[:autruche], session[:campagne])
-  puts updateOK.inspect
-
-
+  puts "tab gen updated"
+  # bug - yhis doesnt work because the revendication is an ajax call
+  # hence this never gets called except when adding the basic info
 
 
   if flight
@@ -423,9 +432,14 @@ end
 post '/admin/avatar' do
 
   autruche = Autruche.get(session[:autruche])
-  n = autruche.avatars.new( :prenom => params[:prenom], :nom => params[:nom] )
+  nationalite = Campagne.get(session[:campagne]).nation_id
+
+  n = autruche.avatars.new( :prenom => params[:prenom], :nom => params[:nom], :nation_id => nationalite )
   autruche.save
-  
+
+  #TODO: automatically give this new avatar its starting (lowest) Grade  
+
+
   redirect '/admin/avatar'
 end
 

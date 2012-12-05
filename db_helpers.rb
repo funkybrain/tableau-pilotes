@@ -36,6 +36,7 @@ class Grade
   property :id,       Serial
   property :nom,      Text, :required => true
   property :img_src,  Text # file name of icon
+  property :rank,     Integer # to odrder them based on progression
   
   belongs_to :nation
   
@@ -72,6 +73,7 @@ class Revendication
   
   property :id,          Serial
   property :descriptif , Text, :required => true
+
   
 #  has n, :flight_results
   
@@ -107,6 +109,7 @@ class Nation
   property :id,        Serial
   property :pays,      Text, :required => true
   property :img_src,   Text # file name of icon
+  property :slug,      Text # two letter code for nation
 
 #  has n, :montures
 #  has n, :decorations

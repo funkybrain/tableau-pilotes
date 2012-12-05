@@ -69,6 +69,7 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
   <fieldset>
     <legend>Revendications</legend>
     <ol>
+      
       <li>
         <label> Mission: </label>
         <select name="choix_mission">
@@ -78,20 +79,26 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
         </select>
         <label><img class="spinner" src="../img/ajax-loader.gif"/></label>
       </li>
+      
       <li class="revendication">
         <label><a id="add" href="/"><img src="../img/add.png"/></a></label>
-        <select name='revendication[]'>
+      
+        <select class='revendication' name='revendication[]'>
           <% @revendications.each do |r| %>
             <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
           <% end %>
         </select>
+      
         <input class="revendication" type="text" name='info_complementaire[]' placeholder="infos complementaires"/>
-        <select name='victoire[]'>
-          <% @victoires.each do |v| %>
-            <option value="<%= v.id %>"> <%=h v.type %> </option>
-          <% end %>          
+      
+        <select id='victoire' name='victoire[]'>
+            <% @victoires.each do |v| %>
+              <option value="<%= v.id %>"> <%=h v.type %> </option>
+            <% end %>
         </select>
+
       </li>
+
     </ol>
     <input type="hidden" name="choix_avatar" value="<%= @avatar.id %>" />
     <input type="submit" value="Soumettre Formulaire!">
@@ -144,7 +151,7 @@ etc si la revendication n'est pas une victoire a&eacute;rienne.
           <ul>
           <% FlightResult.byFlight(flight.id).each do |result| %>
               <li>
-                <%=h Revendication.first(:id => result.revendication_id).descriptif %> - <%=h Victoire.first(:id => result.victoire_id).type %>
+                <%=h Revendication.get(result.revendication_id).descriptif %> - <%=h Victoire.get(result.victoire_id).type %>
                 
               </li>
           <% end %>

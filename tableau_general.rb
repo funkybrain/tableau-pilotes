@@ -31,16 +31,16 @@ class	TabGen
 
 		row.attributes = {
 	                       	:nbr_missions => n_mis,
-							:nbr_atck_sol => n_sol,
-							:nbr_vict => n_vic,
-							:tps_vol_tot => t_vol,
-							:palmares => palma,
-							:monture_id => dmont,
-							:grade_id => gpil,
-							:role_id => lrole
+													:nbr_atck_sol => n_sol,
+													:nbr_vict => n_vic,
+													:tps_vol_tot => t_vol,
+													:palmares => palma,
+													:monture_id => dmont,
+													:grade_id => gpil,
+													:role_id => lrole
                          }
   
-        return row.save
+    return row.save
 		
 	end
 
@@ -68,7 +68,7 @@ class	TabGen
 		# return how many victories the pilot
 		# has in current campaign
 		
-		return Flight.byCampaign(campaignId).byAutruche(autrucheId).count(Flight.flight_results.victoire_id => 1) # 1: victoire aerienne (fix this, id could change in future)
+		return Flight.byCampaign(campaignId).byAutruche(autrucheId).count(Flight.flight_results.revendication_id => 1) # 1: victoire aerienne (fix this, id could change in future)
 
 	end
 
@@ -76,7 +76,7 @@ class	TabGen
 		# return how many straffing missions
 		# the pilot has completed
 
-		return Flight.byCampaign(campaignId).byAutruche(autrucheId).count(Flight.flight_results.victoire_id => 2) # 2: attaque sol (fix, id could change)		
+		return Flight.byCampaign(campaignId).byAutruche(autrucheId).count(Flight.flight_results.revendication_id => 2) # 2: attaque sol (fix, id could change)		
 	end
 
 	def self.tempsVolTotal(autrucheId, campaignId)

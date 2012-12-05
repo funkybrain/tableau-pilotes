@@ -54,6 +54,7 @@ class Avatar
   property :created_at,  DateTime
   
   belongs_to :autruche #defaults to :required=>true
+  belongs_to :nation # get it via campagne
   
   has n, :flights
   has n, :promotions
@@ -108,6 +109,7 @@ class Campagne
   property :created_at, DateTime
 
   has n, :missions
+  belongs_to :nation
   
 end
 
@@ -247,9 +249,10 @@ class Promotion
   property :id,             Serial
   property :created_at,     DateTime
   property :updated_at,     DateTime
-  
+
   belongs_to :avatar, :key => true
   belongs_to :grade,  :key => true
+  belongs_to :mission, :required => false # needed to display grade by mission
   
 end
 

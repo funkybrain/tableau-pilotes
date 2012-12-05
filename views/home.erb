@@ -42,6 +42,8 @@
     <% @tabgen.each do |aut| %>
     <tr>
       <td>
+        <% @image_link = "../img/icons/grades/" + @nation + Grade.get(aut.grade_id).img_src %>
+        <img src="<%= @image_link %>" style="float:left; clear:left;">
         <%= Grade.get(aut.grade_id).nom %>
       </td>
       <td>
@@ -51,13 +53,20 @@
         <%= aut.nbr_missions %>
       </td>
       <td>
-        <%= Monture.get(aut.monture_id).modele %>
+        <% @image_link = "../img/icons/avions/" + @nation + Monture.get(aut.monture_id).modele.gsub!("-", "") + ".png" %>
+        <img src="<%= @image_link %>">
       </td>
       <td>
-        <%= aut.nbr_vict %>
+        <% @image_link = "../img/icons/marquage/common/air.png"%>
+        <% aut.nbr_vict.times do %>
+          <img src="<%= @image_link %>">
+        <% end %>
       </td>
       <td>
-        <%= aut.nbr_atck_sol %>
+        <% @image_link = "../img/icons/marquage/common/sol.png"%>
+        <% aut.nbr_atck_sol.times do %>
+          <img src="<%= @image_link %>">
+        <% end %>
       </td>
       <td>
         <%= aut.tps_vol_tot %>
@@ -73,7 +82,3 @@
   </tbody>  
 </table>
 </br>
-<div>
-  Placeholder format
-  <img src="../img/tab_gen.png">
-</div>
