@@ -18,7 +18,9 @@ set :root, File.dirname(__FILE__)
 # set environment variables
 SITE_TITLE ||= "Le Tableau des Pilotes"
 SITE_DESCRIPTION ||= "Le QG des campagnes autruchiennes"
-
+AUTRUCHES = Autruche.all :order => :callsign.asc 
+CAMPAGNES = Campagne.all :order => :id.desc
+  
 # HELPER METHODS
 
 helpers do
@@ -58,17 +60,21 @@ end
 get '/' do
   # set page title for display in browser tab
   @title='Liste des Pilotes'
-  @js = "home.js"
+  # @js = "home.js"
       
   # retrieve data to set session parameters
   @autruches = Autruche.all :order => :id.desc
   @campagnes = Campagne.all :order => :id.desc
+  
+  # get nation slug based on current campaign
   @nation = Nation.get(Campagne.get(session[:campagne]).nation_id).slug + '/'
 
   # update TabGen - this is a bad hack because i still havent figured out
   # when i should update TabGen.
-  if Autruche.get(session[:autruche]).avatars.flights.all().count > 0
-    updateOK = TabGen.updateTable(session[:autruche], session[:campagne])
+  if Flight.byAutruche(session[:autruche]).byCampaign(session[:campagne]).count > 0
+    TabGen.updateTable(session[:autruche], session[:campagne])
+  else
+    flash.now[:error] = 'Aucunes missions dans cette campagne!'
   end
 
   # get all flights for campaign in session
@@ -88,9 +94,9 @@ post '/' do
   session[:autruche] = params[:choix_autruche]
   session[:campagne] = params[:choix_campagne]  
   
-  flash[:notice] = "Session parameters set!"
+  flash[:notice] = "Choix Autruche et/ou Campagne validé!"
 
-  redirect '/'
+  redirect back
 end
 
 # Load main admin page

@@ -1,24 +1,3 @@
-<br>
-<form action="/" method="post">  
-  <fieldset>
-    <legend>Set session parameters (temp hack until authentification is in place)</legend>
-
-        <label> Pilote: </label>
-        <select name="choix_autruche">
-        <% @autruches.each do |a| %>
-          <option value="<%= a.id %>"> <%=h a.callsign %> </option>
-        <% end %>
-        </select>
-        <label> Campagne: </label>
-        <select name="choix_campagne">
-        <% @campagnes.each do |c| %>
-          <option value="<%= c.id %>"> <%=h c.nom %> </option>
-        <% end %>
-        </select>
-        <input id="submit_btn" type="submit" value="Go!" />
-  </fieldset>
-</form>  
-<p>
 
 <h3>Tableau General: <%= Campagne.get(session[:campagne]).nom %></h3>
 <table id="hor-minimalist-a" summary="Main Table">

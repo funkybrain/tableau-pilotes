@@ -1,4 +1,4 @@
-<h3>Ardoise du Pilote</h3>
+<h3>Ardoise du Pilote [<%= Autruche.get(session[:autruche]).callsign%>] pour la campagne [<%= Campagne.get(session[:campagne]).nom%>]</h3>
 
 <% @unique_avatars.each do |aid| %>
 <h4>Avatar: <%= "id: " + aid.to_s + " " + Avatar.get(aid).nom + " " + Avatar.get(aid).prenom%> </h4>
