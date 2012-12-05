@@ -28,6 +28,8 @@ helpers do
 
 end
 
+### TODO create helper methods used in views a lot e.g. to display icons
+
 # debug clear session
 get '/clear' do
     session[:autruche] = nil
@@ -467,7 +469,9 @@ get '/pilote' do
 
   # get all missions for campagne and autruche in session
   @flights = Flight.byAutruche(session[:autruche]).byCampaign(session[:campagne]).all(:order => :avatar_id.asc)
-  
+  @nation = Nation.get(Campagne.get(session[:campagne]).nation_id).slug + '/'
+
+
   # find all unique avatars in returned collection and store their id's in an array @unique_avatars
   @unique_avatars = @flights.uniq {|x| x.avatar_id}.inject([]) do |result, element|
   result << element.avatar_id

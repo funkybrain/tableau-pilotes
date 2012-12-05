@@ -23,19 +23,29 @@
     <% if f.avatar_id == aid %>
     <tr>
       <td>
+        <% @image_link = "../img/icons/grades/" + @nation + f.avatar.promotions.last.grade.img_src %>
+        <img src="<%= @image_link %>" style="float:left; clear:left;">
       	<%= f.avatar.promotions.last.grade.nom %>
       </td>
       <td>
         <%= f.mission.numero %>
       </td>
       <td>
-        <%= Monture.get(f.monture_id).modele %>
+        <% @image_link = "../img/icons/avions/" + @nation + Monture.get(f.monture_id).modele.gsub!("-", "") + ".png" %>
+        <% @alt_text = Monture.get(f.monture_id).modele %>
+        <img src="<%= @image_link %>" alt="<%= @alt_text %>">
       </td>
       <td>
-        <%= f.flight_results.victoires.count(:id => 1) %>
+        <% @image_link = "../img/icons/marquage/common/air.png"%>
+        <% f.flight_results.revendication.count(:id => 1).times do %>
+          <img src="<%= @image_link %>">
+        <% end %>
       </td>
       <td>
-        <%= f.flight_results.victoires.count(:id => 2) %>
+        <% @image_link = "../img/icons/marquage/common/sol.png"%>
+        <% f.flight_results.revendication.count(:id => 2).times do %>
+          <img src="<%= @image_link %>">
+        <% end %>
       </td>
       <td>
         <%= f.tps_vol_hr.to_s + "h" + f.tps_vol_min.to_s %>
@@ -58,5 +68,3 @@
 </table>
 <% end %>
 
-</br>
-<img src="../img/palmares_pilote.png">

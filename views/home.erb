@@ -54,7 +54,8 @@
       </td>
       <td>
         <% @image_link = "../img/icons/avions/" + @nation + Monture.get(aut.monture_id).modele.gsub!("-", "") + ".png" %>
-        <img src="<%= @image_link %>">
+        <% @alt_text = Monture.get(aut.monture_id).modele%>
+        <img src="<%= @image_link %>" alt="<%= @alt_text %>">
       </td>
       <td>
         <% @image_link = "../img/icons/marquage/common/air.png"%>
