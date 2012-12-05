@@ -46,8 +46,8 @@ before do
   end  
   
   #if session coookies are empty, set them
-  session[:autruche] ||= Autruche.first().id
-  session[:campagne] ||= Campagne.first().id
+  session[:autruche] ||= Autruche.get(1).id
+  session[:campagne] ||= Campagne.get(2).id
   # debug
   # puts "autruche: " + session[:autruche].to_s
   # puts "campagne: " + session[:campagne].to_s
