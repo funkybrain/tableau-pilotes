@@ -53,7 +53,7 @@
         <%= aut.nbr_missions %>
       </td>
       <td>
-        <% @image_link = "../img/icons/avions/" + @nation + Monture.get(aut.monture_id).modele.gsub!("-", "") + ".png" %>
+        <% @image_link = "../img/icons/avions/" + @nation + Monture.get(aut.monture_id).modele.gsub!("-", "").downcase + ".png" %>
         <% @alt_text = Monture.get(aut.monture_id).modele%>
         <img src="<%= @image_link %>" alt="<%= @alt_text %>">
       </td>
