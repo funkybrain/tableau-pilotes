@@ -5,9 +5,10 @@ class	TabGen
 
 	property :nbr_missions,		Integer
 	property :nbr_atck_sol,		Integer
-	property :nbr_vict,			Integer
+	property :nbr_vict_conf,	Integer
+	property :nbr_vict_part,	Integer
 	property :tps_vol_tot,		String
-	property :palmares,			String
+	property :palmares,				String
 
 	belongs_to :grade
 	belongs_to :monture
@@ -32,7 +33,8 @@ class	TabGen
 		row.attributes = {
 	                       	:nbr_missions => n_mis,
 													:nbr_atck_sol => n_sol,
-													:nbr_vict => n_vic,
+													:nbr_vict_conf => n_vic[0],
+													:nbr_vict_part => n_vic[1],
 													:tps_vol_tot => t_vol,
 													:palmares => palma,
 													:monture_id => dmont,
@@ -67,8 +69,12 @@ class	TabGen
 	def self.nombreVictoires(autrucheId, campaignId)
 		# return how many victories the pilot
 		# has in current campaign
-		
-		return Flight.byCampaign(campaignId).byAutruche(autrucheId).count(Flight.flight_results.revendication_id => 1) # 1: victoire aerienne (fix this, id could change in future)
+		vic_conf = {:revendication_id => 1, :victoire_id => 1}
+		vic_part = {:revendication_id => 1, :victoire_id => 2}
+		count_conf = Flight.byCampaign(campaignId).byAutruche(autrucheId).flight_results(vic_conf).count
+		count_part = Flight.byCampaign(campaignId).byAutruche(autrucheId).flight_results(vic_part).count
+		 
+		return [count_conf, count_part] 
 
 	end
 

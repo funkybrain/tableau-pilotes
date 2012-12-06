@@ -40,19 +40,18 @@ get '/clear' do
 end
 
 # fake slow net connection for ajax requests
-# and set hacky session variable
-
 before do
   if request.xhr?
     sleep 1
   end  
-  
+end
+
+# set hacky session variable
+before ('/') do  
   #if session coookies are empty, set them
   session[:autruche] ||= Autruche.get(1).id
   session[:campagne] ||= Campagne.get(2).id
-  # debug
-  # puts "autruche: " + session[:autruche].to_s
-  # puts "campagne: " + session[:campagne].to_s
+
 end
 
 # DEFINE ROUTES AND ACTIONS

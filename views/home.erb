@@ -38,9 +38,13 @@
       </td>
       <td>
         <% @image_link = "../img/icons/marquage/common/air.png"%>
-        <% aut.nbr_vict.times do %>
+        <% aut.nbr_vict_conf.times do %>
           <img src="<%= @image_link %>">
         <% end %>
+        <% @image_link = "../img/icons/marquage/common/airdemi.png"%>
+        <% aut.nbr_vict_part.times do %>
+          <img src="<%= @image_link %>">
+        <% end %>        
       </td>
       <td>
         <% @image_link = "../img/icons/marquage/common/sol.png"%>
