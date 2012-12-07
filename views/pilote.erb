@@ -1,8 +1,8 @@
 <h3>Ardoise du Pilote [<%= Autruche.get(session[:autruche]).callsign%>] pour la campagne [<%= Campagne.get(session[:campagne]).nom%>]</h3>
 
 <% @unique_avatars.each do |aid| %>
-<h4>Avatar: <%= "id: " + aid.to_s + " " + Avatar.get(aid).nom + " " + Avatar.get(aid).prenom%> </h4>
-<table id="hor-minimalist-a" summary="Main Table">
+<h4><%= Avatar.get(aid).nom + " " + Avatar.get(aid).prenom + " (avatar id: " + aid.to_s + ")" %> </h4>
+<table class="table table-striped table-bordered table-hover" summary="Main Table">
   <thead>
     <tr>
       <th scope="col">Grade</th>

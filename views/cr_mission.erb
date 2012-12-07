@@ -1,169 +1,168 @@
-
-<br>
-<h3>Infos</h3>
-
-<div id="info">
-Remplissez le formulaire avec attention. N'oubliez pas, vous pouvez apporter une description plus pr&eacute;cise
+<h3>Instructions</h3>
+<p> Remplissez le formulaire avec attention. N'oubliez pas, vous pouvez apporter une description plus pr&eacute;cise
 pour chaque revendication. Il est inutile de s&eacute;lectionner la liste "confirm&eacute;e", "probable"
-etc si la revendication n'est pas une victoire a&eacute;rienne.
+etc si la revendication n'est pas une victoire a&eacute;rienne.</p>
+
+<form id="mission" class="form-horizontal" action="/cr_mission" method="post">
+<fieldset>
+<legend>Compte Rendu de Mission</legend>
+
+<div class="control-group">
+  <label class="control-label">Mission: </label>
+  <div class="controls">
+    <select class="span4" name="choix_mission">
+    <% @missions.each do |m| %>
+      <option value="<%= m.id %>"> <%= m.numero %>: <%=h m.nom %> </option>
+    <% end %>
+    </select>
+  </div>
 </div>
-<br>
+<div class="control-group">
+  <label class="control-label">Avion pilot&eacute;: </label>
+  <div class = "controls">
+    <select class="span2" name="choix_monture">
+    <% @montures.each do |m| %>
+      <option value="<%= m.id %>"> <%=h m.modele %> </option>
+    <% end %>
+    </select>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">Avatar actif:</label>
+  <div class="controls">
+    <input class="disabled span3" type="text" readonly="readonly" name="choix_avatar" value="<%= @avatar.id %>" />
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">R&ocirc;le (initial) du pilote: </label>  
+  <div class="controls">
+    <select class="span3" name="choix_role">
+    <% @roles.each do |r| %>
+      <option value="<%= r.id %>"> <%=h r.type %> </option>
+    <% end %>
+    </select>  
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">Temps de vol (hh:mm): </label>  
+  <div class="controls">
+    <input class="span1" type="text" name="tps_vol_hr" placeholder="hh" />
+    <input class="span1" type="text" name="tps_vol_min" placeholder="mm" />
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">Statut en fin de mission: </label>
+  <div class="controls">
+    <select class="span4" name="choix_statut">
+    <% @statuts.each do |s| %>
+      <option value="<%= s.id %>"> <%=h s.statut %> </option>
+    <% end %>
+    </select>  
+  </div>
+</div>
+<div class="form-actions">
+  <input class="btn btn-primary" type="submit" value="Ajouter Compte Rendu &raquo;">
+</div>
+</fieldset>  
+</form>  
 
-<!-- ADMIN MISSION -->
-  <form id="mission" class="cmxform" action="/cr_mission" method="post">  
-  <fieldset>
-    <legend>Formulaire mission</legend>
-    <ol>
-      <li>
-        <label> Mission: </label>
-        <select name="choix_mission">
-        <% @missions.each do |m| %>
-          <option value="<%= m.id %>"> <%= m.numero %>-<%=h m.nom %> </option>
-        <% end %>
-        </select>
-      </li>
-      <li>
-        <label> Avatar actif:</label>
-        <input class="disabled" type="text" readonly="readonly" name="choix_avatar" value="<%= @avatar.id %>" />
-      </li>
-      <li>    
-        <label> Avion pilot&eacute;: </label>
-        <select name="choix_monture">
-        <% @montures.each do |m| %>
-          <option value="<%= m.id %>"> <%=h m.modele %> </option>
-        <% end %>
-        </select>
-      </li>
-      <li>
-        <label> R&ocirc;le (initial) du pilote: </label>
-        <select name="choix_role">
-        <% @roles.each do |r| %>
-          <option value="<%= r.id %>"> <%=h r.type %> </option>
-        <% end %>
-        </select>
-      </li>
-      <li>
-        <label> Temps de vol (heures): </label>
-        <input type="text" name="tps_vol_hr" placeholder="hh" />
-      </li>
-      <li>
-        <label> Temps de vol (min): </label>
-        <input type="text" name="tps_vol_min" placeholder="mm" />
-      </li>
-      <li>
-        <label> Statut en fin de mission: </label>
-        <select name="choix_statut">
-        <% @statuts.each do |s| %>
-          <option value="<%= s.id %>"> <%=h s.statut %> </option>
-        <% end %>
-        </select>
-      </li>
-    </ol>
-      <input type="submit" value="Soumettre Formulaire!">
-    </fieldset>  
-  </form>  
- 
- 
- 
-  <form id="revendication" class="cmxform" action="/cr_mission/revendication" method="post">  
-  <fieldset>
-    <legend>Revendications</legend>
-    <ol>
-      
-      <li>
-        <label> Mission: </label>
-        <select name="choix_mission">
-        <% @flights.missions.each do |m| %>
-          <option value="<%= m.id %>"> <%= m.numero %>-<%=h m.nom %> </option>
-        <% end %>
-        </select>
-        <label><img class="spinner" src="../img/ajax-loader.gif"/></label>
-      </li>
-      
-      <li class="revendication">
-        <label><a id="add" href="/"><img src="../img/add.png"/></a></label>
-      
-        <select class='revendication' name='revendication[]'>
-          <% @revendications.each do |r| %>
-            <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
-          <% end %>
-        </select>
-      
-        <input class="revendication" type="text" name='info_complementaire[]' placeholder="infos complementaires"/>
-      
-        <select id='victoire' name='victoire[]'>
-            <% @victoires.each do |v| %>
-              <option value="<%= v.id %>"> <%=h v.type %> </option>
-            <% end %>
-        </select>
 
-      </li>
+<!-- Revendications  -->
+<form class="form-horizontal" id="revendication" action="/cr_mission/revendication" method="post">  
+<fieldset>
+<legend>Revendications</legend>
 
-    </ol>
-    <input type="hidden" name="choix_avatar" value="<%= @avatar.id %>" />
-    <input type="submit" value="Soumettre Formulaire!">
-  </fieldset>  
+<div class="control-group"> 
+  <label class="control-label">Mission: </label>
+  <div class="controls">
+    <select class="span4" name="choix_mission">
+      <% @flights.missions.each do |m| %>
+        <option value="<%= m.id %>"> <%= m.numero %>-<%=h m.nom %> </option>
+      <% end %>
+    </select>
+    </div>
+</div>
+<div class="control-group revendication">
+  <label class="control-label">Revendication:</label>
+  <div class="controls">
+    <select class="span3" class='revendication' name='revendication[]'>
+      <% @revendications.each do |r| %>
+        <option value="<%= r.id %>"> <%=h r.descriptif %> </option>
+      <% end %>
+    </select>
+    <input class="span4" class="revendication" type="text" name='info_complementaire[]' placeholder="infos complementaires"/>
+    <select class="span2" id='victoire' name='victoire[]'>
+        <% @victoires.each do |v| %>
+          <option value="<%= v.id %>"> <%=h v.type %> </option>
+        <% end %>
+    </select>
+    <a id="add" href="#"><i class="icon-plus"></i></a>
+    <img class="spinner" src="../img/ajax-loader.gif"/>
+  </div>
+</div>
+<div class="form-actions">
+  <input type="hidden" name="choix_avatar" value="<%= @avatar.id %>" />
+  <input class="btn btn-primary" type="submit" value="Ajouter Revendication(s) &raquo;">
+</div>
+</fieldset>  
 </form> 
  
  
 
-  <h3>Liste des missions pr&eacute;alablement effectu&eacute;es</h3>
-  <table id="hor-minimalist-a" summary="Main Table">
-    <!-- Table header -->
-    <thead>
-      <tr>
+<h3>Liste des missions pr&eacute;alablement effectu&eacute;es</h3>
+<table class="table table-striped table-bordered table-hover" summary="Main Table">
+  <!-- Table header -->
+  <thead>
+    <tr>
+      <th scope="col">Campagne</th>
+      <th scope-"col">Mission</th>
+      <th scope="col">Avatar</th>
+      <th scope="col">Monture</th>
+      <th scope="col">Role</th>
+      <th scope="col">Statut</th>
+      <th scope="col">Revendications</th>
+      <th scope="col">Action</th>
+      
+     </tr>
+  </thead>
+  
+  <!-- Table body -->
+  <tbody>
 
-        <th scope="col">Campagne</th>
-        <th scope-"col">Mission</th>
-        <th scope="col">Avatar</th>
-        <th scope="col">Monture</th>
-        <th scope="col">Role</th>
-        <th scope="col">Statut</th>
-        <th scope="col">Revendications</th>
-        
-       </tr>
-    </thead>
-    
-    <!-- Table body -->
-    <tbody>
-
-    <% @flights.each do |flight| %> 
-      <tr>
-        <td>
-          <%=h flight.mission.campagne.nom %>
-        </td>
-        <td>
-          <%=h flight.mission.numero %>: <%=h flight.mission.nom %>
-        </td>
-        <td>
-          <%=h flight.avatar.prenom %> <%=h flight.avatar.nom %>
-        </td>
-        <td>
-          <%=h flight.monture.modele %>
-        </td>
-        <td>
-          <%=h flight.role.type %>
-        </td>
-        <td>
-          <%=h flight.statut_fin_mission.statut %>
-        </td>
-        <td>
-          <ul>
-          <% FlightResult.byFlight(flight.id).each do |result| %>
-              <li>
-                <%=h Revendication.get(result.revendication_id).descriptif %> - <%=h Victoire.get(result.victoire_id).type %>
-                
-              </li>
-          <% end %>
-          </ul>
-        </td>
-        <td>
-          <span><a href="/<%= flight.avatar.id %>/<%= flight.mission.id %>">[edit]</a></span>  
-        </td>
-        <td class="meta">
-          <%= flight.created_at.strftime("Created: %m/%d/%Y") %>
-        </td>  
-      </tr>
-      <% end %>
-    </tbody>  
-  </table>
+  <% @flights.each do |flight| %> 
+    <tr>
+      <td>
+        <%=h flight.mission.campagne.nom %>
+      </td>
+      <td>
+        <%=h flight.mission.numero %>: <%=h flight.mission.nom %>
+      </td>
+      <td>
+        <%=h flight.avatar.prenom %> <%=h flight.avatar.nom %>
+      </td>
+      <td>
+        <%=h flight.monture.modele %>
+      </td>
+      <td>
+        <%=h flight.role.type %>
+      </td>
+      <td>
+        <%=h flight.statut_fin_mission.statut %>
+      </td>
+      <td>
+        <ul>
+        <% FlightResult.byFlight(flight.id).each do |result| %>
+            <li>
+              <%=h Revendication.get(result.revendication_id).descriptif %> - <%=h Victoire.get(result.victoire_id).type %>
+              
+            </li>
+        <% end %>
+        </ul>
+      </td>
+      <td>
+        <span><a href="/<%= flight.avatar.id %>/<%= flight.mission.id %>">[edit]</a></span>  
+      </td>
+    </tr>
+    <% end %>
+  </tbody>  
+</table>

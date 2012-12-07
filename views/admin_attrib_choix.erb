@@ -1,0 +1,9 @@
+<!-- ADMIN ATTRIBUTION MEDAILLE-->
+  <h3> A quelle autruche voulez vous attribuer une recompense? </h3>
+  <form action="/admin/attribution" method="post">
+    <select name="choix_autruche">
+      <% @autruches.each do |a| %>
+        <option value="<%= a.id %>"> <%= a.id %>-<%=h a.callsign %> </option>
+      <% end %>
+    </select>
+    <input type="submit" value="Go!"/>

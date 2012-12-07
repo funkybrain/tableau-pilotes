@@ -1,0 +1,55 @@
+<h3>Instructions</h3>
+<p> A completer....</p>
+
+<fieldset>
+<legend>Ajouter une Campagne</legend>
+<form class="form-inline" action="/admin/campagne" method="post">  
+  <input type="text" name="nom" placeholder="Titre campagne"/>
+  <input type="text" name="descriptif" placeholder="Descriptif campagne"/>
+  <select class="span2" name="choix_pays">
+    <% @nations.each do |p| %>
+      <option value="<%= p.id %>"> <%=h p.pays %> </option>
+    <% end %>    
+  </select>
+  <input class="btn btn-primary" type="submit" value="Ajouter Campagne &raquo;">  
+</form>  
+</fieldset>
+
+<h3> Liste des campagnes existantes</h3>
+<table class="table table-striped table-bordered table-hover" summary="Main Table">
+<!-- Table header -->
+<thead>
+  <tr>
+    <th scope="col">#</th>
+    <th scope="col">Titre</th>
+    <th scope="col">Descriptif</th>
+    <th scope="col">Nation</th>
+    <th scope="col">Action</th>
+   </tr>
+</thead>
+
+<!-- Table body -->
+<tbody>
+<% i=1 %>
+<% @campagnes.each do |campagne| %> 
+  <tr>
+    <td>
+      <%= i %>
+    </td>
+    <td>
+      <%=h campagne.nom %>
+    </td>
+    <td>
+      <%=h campagne.descriptif %>
+    </td>
+    <td>
+      <%=h campagne.nation.pays %>
+    </td>  
+    <td>
+      <span><a href="/<%= campagne.id %>">[edit]</a></span>  
+    </td>
+  </tr>
+  <% i=i+1 %>
+  <% end %>
+</tbody>  
+</table>

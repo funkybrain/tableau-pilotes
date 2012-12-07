@@ -1,85 +1,148 @@
-<!doctype html>  
+
+<!DOCTYPE html>
 <html lang="en">
-
-  <head>     
-    <meta charset="utf8">  
+  <head>
+    <meta charset="utf-8">
     <title><%= "#{@title} | #{SITE_TITLE}" %></title>  
-    <link href="/style.css" rel="stylesheet">    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">    
+
+    <!-- Le styles -->
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="shortcut icon" href="../assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
   </head>
-  
+
   <body>
-    <div class="grid">
-      
-      <div class="header">
 
-        <div class="title">
-          <h3><a href="/"><%= SITE_TITLE %></a><h3>  
-          <h3><%= SITE_DESCRIPTION %></h3>
-        </div>
-
-        <div class="login">  
-          <form action="/" method="post">  
-                  <label> Pilote: </label>
-                  <select name="choix_autruche">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/"><%= SITE_TITLE %></a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="/">Acceuil</a></li>
+              <li><a href="/campagne">Campagne</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pilote<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/cr_mission">Compte Rendu</a></li>
+                  <li><a href="/pilote">Palmares</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/admin/campagne">Campagne</a></li>
+                  <li><a href="/admin/mission">Mission</a></li>
+                  <li><a href="/admin/avatar">Avatar</a></li>
+                  <li><a href="/admin/autruche">Autruche</a></li>
+                  <li><a href="/admin/attribution">Recompenses</a></li>
+                  <li class="divider"></li>
+                  <li class="nav-header">Aides Campagne</li>
+                  <li><a href="/admin/nation">Nations</a></li>
+                  <li><a href="/admin/grade">Grades</a></li>
+                  <li><a href="/admin/avion">Avions</a></li>
+                  <li><a href="#">Decorations</a></li>
+                  <li><a href="#">...</a></li>
+                  <li class="divider"></li>
+                  <li><a href="/admin/grille">Grille d'Avancement</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form class="navbar-form pull-right form-inline" action="/" method="post">
+                <select class="span2" name="choix_autruche">
                   <% AUTRUCHES.each do |a| %>
                     <option value="<%= a.id %>" <% if a.id.to_s == session[:autruche] %>  selected="selected" <% end %> >
                       <%=h a.callsign %>
                     </option>
-                  
                   <% end %>
-                  </select>
-
-                  <br>
-                  <label> Campagne: </label>
-                  <select name="choix_campagne">
+                </select>
+                <select class="span2" name="choix_campagne">
                   <% CAMPAGNES.each do |c| %>
                     <option value="<%= c.id %>" <% if session[:campagne] == c.id.to_s %> selected="selected" <% end %> >
                      <%=h c.nom %>
                     </option>
                     <% end %>
-                  </select>
-                  <input id="submit_btn" type="submit" value="Go!" />
-          </form>  
+                </select>
+                <input class="btn btn-primary" id="submit_btn" type="submit" value="Go &raquo;" />
+            </form>  
+
+          </div><!--/.nav-collapse -->
         </div>
       </div>
+    </div>
 
-      <div class="flash">
-        <% if flash[:notice] %>
-        <p class="notice"><%= flash[:notice] %>
-        <% end %>        
-        <% if flash[:error] %>
-        <p class="error"><%= flash[:error] %>
-        <% end %>
-      </div>
-      <div class="tabnav" id="tab1">
-        <ul id="tabnav">
-        <li class="tab1"><a href="/">Accueil</a></li>
-        <li class="tab2"><a href="/admin">Administration</a></li>
-        <li class="tab3"><a href="/cr_mission">Debrief Mission</a></li>
-        <li class="tab4"><a href="/pilote">Palmares Pilote</a></li>
-        <li class="tab5"><a href="/campagne">Suivi Campagne</a></li>
-        </ul>
-      </div>
+    <div class="container">
 
-      <div id="main">
-        <br>
-        <%= yield %>
-        <b>
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h1>Bienvenue, Autruche!</h1>
+        <p>Ici un jour il y aura pleins de belles choses pour toi.</p>
       </div>
       
-      <div class="footer">
-      <br>  
-      <small>Une application pour les <a href="http://forum.autruches.org">Autruches</a>.</small></p>  
-      </div>  
-    </div>  
+      <!-- Flash notices -->
+      <div class="row">
+        <div class="span12">
+          <% if flash[:notice] %>
+           <p class="text-info"><%= flash[:notice] %>
+          <% end %>        
+          <% if flash[:error] %>
+            <p class="text-error"><%= flash[:error] %>
+          <% end %>
+        </div>
+      </div>
+      
+      <!-- Main content -->
+      <div class="row">
+        <div class="span12">
+          <%= yield %>
+        </div>
+      </div>      
+      
+      <!-- footer -->
+      <hr>
+      <footer>
+        <small>Une application pour les <a href="http://forum.autruches.org">Autruches</a>.</small>
+      </footer>
+
+    </div> <!-- /container -->
     
+
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
     
     <!-- load custom js for each route -->
     <% if @js %>
     <script type="text/javascript" src="/js/<%= @js %>"></script>
     <% end %> 
 
-  </body>
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
 
-</html>  
+
+  </body>
+</html>

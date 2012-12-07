@@ -98,14 +98,6 @@ post '/' do
   redirect back
 end
 
-# Load main admin page
-get '/admin' do
-  @title='Gestion Campagne'
-  @js = "admin.js"
-  
-  erb :admin
-end
-
 
 ### ATTRIBUTIONS MEDAILLES ET CITATIONS:
 
@@ -115,7 +107,7 @@ get '/admin/attribution' do
   @page='attribution'
   @autruches = Autruche.all :order=> :callsign.asc
   
-  erb :admin
+  erb :admin_attrib_choix
 end
 
 # redirects to individual pilot page to set pilot rewards
@@ -145,7 +137,7 @@ get '/admin/attribution/:id' do
     end    
   end
   
-  erb :attribution
+  erb :admin_attrib_deco
 end
 
 # save reward in db
@@ -174,15 +166,17 @@ get '/admin/mission' do
   @campagnes = Campagne.all :order=>:id.desc
   @selected = params[:campagne]
   
+
   if !params[:campagne]
-    #puts "camp id retrieved from normal GET"
+    # retrieved from normal GET"
     camp_id = @campagnes[0].id # first campagne in collection is latest
   else
-    #puts "camp id retrieved from ajax call"
+    # retrieved from ajax call"
     camp_id = params[:campagne] # if submitted via Ajax
   end
   # retrieve list of missions for selected campaign
   @missions = Mission.all :campagne_id => camp_id, :order=> :numero.asc
+  
   
   erb :admin_mission , :layout => !request.xhr?
   
@@ -215,20 +209,23 @@ get '/admin/campagne' do
     flash[:error] = "Aucune campagne accessible"
   end
   
-  erb :admin
+  erb :admin_campagne
 end
 
 post '/admin/campagne' do
 
   # TODO: before creating a new campaign, set all current campaign avatars to inactive
   # and then set last campaign to inactive, and new campaign to active
-  n = Campagne.first_or_create(:nom => params[:nom], :descriptif => params[:descriptif]) 
+  n = Campagne.first_or_create(:nom => params[:nom],
+   :descriptif => params[:descriptif],
+   :nation_id => params[:choix_nation])
+
   redirect '/admin/campagne'
 end
 
 ### AJOUTER UN PAYS
 
-get '/admin/pays' do
+get '/admin/nation' do
   @page='pays'
   @title='Gestion Nation'
 
@@ -238,13 +235,13 @@ get '/admin/pays' do
     flash[:error] = "Liste des Nations vide"
   end
   
-  erb :admin
+  erb :admin_nation
 end
 
 post '/admin/pays' do
   n = Nation.first_or_create(:pays => params[:pays])
   puts n.inspect
-  redirect '/admin/pays'
+  redirect '/admin/nation'
 end
 
 ### AJOUTER UN GRADE
@@ -282,7 +279,7 @@ get '/admin/autruche' do
     flash[:error] = "Liste des pilotes vide"
   end
   
-  erb :admin
+  erb :admin_autruche
 end
 
 post '/admin/autruche' do
@@ -433,7 +430,7 @@ get '/admin/avatar' do
     flash.now[:error] = "Aucun avatar pour ce pilote et/ou cette campagne"
   end
   
-  erb :avatar
+  erb :admin_avatar
 end
 
 post '/admin/avatar' do
@@ -457,7 +454,7 @@ get '/admin/avatar/:id' do
 
   @avatar = Avatar.get(params[:id])
 
-  erb :avatar_edit
+  erb :admin_avatar_edit
 end  
 
 post '/admin/avatar/:id' do

@@ -1,0 +1,53 @@
+<h3>Instructions</h3>
+<p> A completer....</p>
+
+<fieldset>
+<legend>Ajouter une Autruche</legend>
+<form class="form-inline" action="/admin/autruche" method="post">  
+  <input type="text" name="callsign" placeholder="Callsign"/>
+  <input type="text" name="prenom" placeholder="Prenom"/>
+  <input type="text" name="nom" placeholder="Nom"/>
+  <input class="btn btn-primary" type="submit" value="Ajouter Autruche &raquo;">  
+</form>
+</fieldset>
+
+
+<h3> Liste des Autruches existantes</h3>
+<table class="table table-striped table-bordered table-hover" summary="">
+  <!-- Table header -->
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col" id="callsign">Callsign</th>
+      <th scope="col" id="prenom">Prenom</th>
+      <th scope="col" id="nom">Nom</th>
+      <th scope="col" id="nom">Action</th>
+     </tr>
+  </thead>
+  
+  <!-- Table body -->
+  <tbody>
+  <% i=1 %>
+  <% @autruches.each do |autruche| %> 
+    <tr>
+      <td>
+        <%= i %>
+      </td>
+      <td>
+        <%=h autruche.callsign %>
+      </td>
+      <td>
+        <%=h autruche.prenom %>
+      </td>
+      <td>
+        <%=h autruche.nom %>
+      </td>
+      <td>
+        <span><a href="/<%= autruche.id %>">[edit]</a></span>  
+      </td>
+
+    </tr>
+    <% i=i+1 %>
+    <% end %>
+  </tbody>  
+</table>

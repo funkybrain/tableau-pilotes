@@ -1,0 +1,38 @@
+<section id="add">  
+  <h2>Ajouter une nation</h2>
+    <form action="/admin/pays" method="post">  
+      <textarea name="pays" placeholder="pays"></textarea>
+      <input type="submit" value="Ajouter Pays!">  
+    </form>  
+  </section>
+  
+  <h2> Liste des nations</h2>
+  <table class="table table-striped table-bordered table-hover" summary="Main Table">
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col" id="Pays">Pays</th>
+       </tr>
+    </thead>
+    
+    <!-- Table body -->
+    <tbody>
+    <% i=1 %>
+    <% @nations.each do |n| %> 
+      <tr>
+        <td>
+          <%= i %>
+        </td>
+        <td>
+          <%=h n.pays %>
+        </td>
+        <td>
+          <span><a href="/<%= n.id %>">[edit]</a></span>  
+        </td>
+          
+      </tr>
+      <% i=i+1 %>
+      <% end %>
+    </tbody>  
+  </table>

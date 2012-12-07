@@ -1,0 +1,50 @@
+<!-- Admin Grade-->
+<h2>Ajouter un grade</h2>
+<form action="/admin/grade" method="post">  
+  Choisir une nation:
+  <select name="choix_nation">
+    <% @nations.each do |n| %>
+      <option value="<%= n.id %>"> <%= n.id %>-<%=h n.pays %> </option>
+    <% end %>
+  </select>
+  <textarea name="nom" placeholder="grade"></textarea>
+  
+  
+  <input type="submit" value="Ajouter Grade!">  
+</form>  
+
+
+<h2> Liste des Grades</h2>
+<table class="table table-striped table-bordered table-hover" summary="Main Table">
+<!-- Table header -->
+<thead>
+  <tr>
+    <th scope="col">#</th>
+    <th scope-"col">Pays</th>
+    <th scope="col">Grade</th>
+    
+   </tr>
+</thead>
+
+<!-- Table body -->
+<tbody>
+<% i=1 %>
+<% @grades.each do |grade| %> 
+  <tr>
+    <td>
+      <%= i %>
+    </td>
+    <td>
+      <%=h grade.nation.pays %>
+    </td>
+    <td>
+      <%=h grade.nom %>
+    </td>
+    <td>
+      <span><a href="/<%= grade.id %>">[edit]</a></span>  
+    </td>
+  </tr>
+  <% i=i+1 %>
+  <% end %>
+</tbody>  
+</table>

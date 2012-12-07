@@ -1,49 +1,55 @@
 
-<div id="mission">
+<h3>Instructions</h3>
+<p> A completer....</p>
 
-  <form id="mission" class="cmxform" name="mission" action="/admin/mission" method="post">
-    <fieldset>
-    <legend>Ajouter une mission</legend>
-    <ol>
-    <li>
-      <label for="campagne" id="campagne_label" >Choisir une Campagne</label>
-      <select id="campagne" name="campagne">
-        <% @campagnes.each do |c| %>
-          <option value="<%= c.id %>" <%if (@selected==c.id)%> selected="selected" <% end %>  > <%=h c.nom %> </option>
-        <% end %>
-      </select>
-      <label><img class="spinner" src="../img/ajax-loader.gif"/></label>
-    </li>
-    <li>
-      <label for="numero" id="numero_label" >Num&eacute;ro</label>
-      <input type="text" name="numero" id="numero" placeholder="" size="5"/>
-      <label class="error" for="numero" id="numero_error">Champ obligatoire.</label>
-    </li>
-    <li>
-      <label for="nom" id="nom_label" >Nom de la mission</label>
-      <input type="text" name="nom" id="nom" placeholder="" size="50"/>
-      <label class="error" for="nom" id="nom_error">Champ obligatoire.</label>      
-    </li>
-    <li>
-      <label for="briefing" id="briefing_label" >Briefing</label>
-      <textarea name="briefing" id="briefing" placeholder="" cols="50" rows="5"/></textarea>
-      <label class="error" for="briefing" id="briefing_error">Champ non valide</label>      
-    </li>
-    <li>
-      <label for="debriefing" id="debriefing_label" >Debriefing</label>
-      <textarea name="debriefing" id="debriefing" placeholder="" cols="50" rows="5"/></textarea>
-      <label class="error" for="debriefing" id="debriefing_error">Champ non valide</label>      
-    </li>
+<form id="mission" class="form-horizontal" action="/admin/mission" method="post">
+<fieldset>
+<legend>Ajouter une Mission</legend>
 
-    <li>
-      <input type="submit" name="submit" id="submit_btn" class="button" value="Ajouter" />
-    </li>
-    </ol>  
-    </fieldset>
-  </form>
+<div class="control-group">
+  <label class="control-label">Choisir une campagne:</label>
+  <div class="controls">
+    <select class="span4" id="campagne" name="campagne">
+      <% @campagnes.each do |c| %>
+        <option value="<%= c.id %>" <%if (@selected==c.id)%> selected="selected" <% end %>  > <%=h c.nom %> </option>
+      <% end %>
+    </select>
+    <img class="spinner" src="../img/ajax-loader.gif"/>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">Num&eacute;ro:</label>
+  <div class = "controls">
+    <input class="span1" type="text" name="numero" id="numero" placeholder=""/>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">Nom de la mission:</label>
+  <div class="controls">
+    <input class="span4" type="text" name="nom" id="nom" placeholder=""/>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">Briefing:</label>  
+  <div class="controls">
+      <textarea class="span4" name="briefing" id="briefing" placeholder="" rows="5"/></textarea>
+  </div>
+</div>
+<div class="control-group">
+  <label class="control-label">Debriefing:</label>  
+  <div class="controls">
+      <textarea class="span4" name="debriefing" id="debriefing" placeholder="" rows="5"/></textarea>
+  </div>
+</div>
+<div class="form-actions">
+  <input class="btn btn-primary" type="submit" value="Ajouter Mission &raquo;">
+</div>
+</fieldset>  
+</form> 
+
   
-<h3>Missions Existentes</h3>
-<table class="mission" id="hor-minimalist-a" summary="Main Table">
+<h3>Liste des missions existentes</h3>
+<table class="mission table table-striped table-bordered table-hover" summary="Main Table">
   <!-- Table header -->
   <thead>
     <tr>
@@ -51,6 +57,7 @@
       <th scope="col">Mission</th>
       <th scope="col">Briefing</th>
       <th scope="col">De-Briefing</th>
+      <th scope="col">Action</th>
       
      </tr>
   </thead>
@@ -74,12 +81,7 @@
       <td>
         <span><a href="/<%= m.id %>">[edit]</a></span>  
       </td>
-      <td>
-        <class="meta"><%= m.created_at.strftime("Created: %m/%d/%Y") %>
-      </td>  
     </tr>
    <% end %>
   </tbody>  
 </table>
-
-</div>

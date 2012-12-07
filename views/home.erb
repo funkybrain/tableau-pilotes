@@ -1,6 +1,6 @@
 
-<h3>Tableau General: <%= Campagne.get(session[:campagne]).nom %></h3>
-<table id="hor-minimalist-a" summary="Main Table">
+<h3>Tableau G&eacute;n&eacute;ral: <%= Campagne.get(session[:campagne]).nom %></h3>
+<table class="table table-striped table-bordered table-hover" summary="Main Table">
   <!-- Table header -->
   <thead>
     <tr>
@@ -22,8 +22,8 @@
     <tr>
       <td>
         <% @image_link = "../img/icons/grades/" + @nation + Grade.get(aut.grade_id).img_src %>
-        <img src="<%= @image_link %>" style="float:left; clear:left;">
-        <%= Grade.get(aut.grade_id).nom %>
+        <img class="img-rounded" src="<%= @image_link %>"/>
+        <%= Grade.get(aut.grade_id).nom %>        
       </td>
       <td>
         <%= Autruche.get(aut.autruche_id).callsign %>
@@ -34,22 +34,22 @@
       <td>
         <% @image_link = "../img/icons/avions/" + @nation + Monture.get(aut.monture_id).modele.gsub!("-", "").downcase + ".png" %>
         <% @alt_text = Monture.get(aut.monture_id).modele%>
-        <img src="<%= @image_link %>" alt="<%= @alt_text %>">
+        <img src="<%= @image_link %>" alt="<%= @alt_text %>"/>
       </td>
       <td>
         <% @image_link = "../img/icons/marquage/common/air.png"%>
         <% aut.nbr_vict_conf.times do %>
-          <img src="<%= @image_link %>">
+          <img src="<%= @image_link %>" class="img-rounded"/>
         <% end %>
         <% @image_link = "../img/icons/marquage/common/airdemi.png"%>
         <% aut.nbr_vict_part.times do %>
-          <img src="<%= @image_link %>">
+          <img src="<%= @image_link %>" class="img-rounded"/>
         <% end %>        
       </td>
       <td>
         <% @image_link = "../img/icons/marquage/common/sol.png"%>
         <% aut.nbr_atck_sol.times do %>
-          <img src="<%= @image_link %>">
+          <img src="<%= @image_link %>" class="img-rounded"/>
         <% end %>
       </td>
       <td>
@@ -65,4 +65,3 @@
     <% end %>
   </tbody>  
 </table>
-</br>
