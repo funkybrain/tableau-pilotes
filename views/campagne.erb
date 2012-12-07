@@ -1,9 +1,23 @@
-## TODO: Choisir une mission pour la campagne en cours et lister chaque resultat par pilote
+<h3>Instructions</h3>
+<p> Choisir une mission de la campagne actuelle pour voir les resultats de cette mission. Pour changer de campagne, utiliser le menu deroulant en haut de page.</p>
 
+<fieldset>
+<legend>Choisir une Mission</legend>
+<form class="form-inline" action="/campagne" method="post">
+  <select class="span4" name="id">
+    <% @missions.each do |m| %>
+    <option class="span3" value="<%= m.id %>" <% if m.id.to_s == @m_id %> selected="selected" <% end %> >
+      <%= m.numero %>: <%= m.nom %> 
+    </option>
+    <% end %> 
+  </select>
+  <input class="btn btn-primary" type="submit" value="Go &raquo;"/>
+</form>
+</fieldset>
 
-<h3>Compte Rendu de campagne de la mission #
-<%= @missnum %>-"<%= Mission.get(@missnum).nom%>"
-</h3>
+<% if @display_table %>
+<h3> Compte rendu de la mission #<%= @mission %> </h3>
+
 <table class="table table-striped table-bordered table-hover" summary="Main Table">
   <thead>
     <tr>
@@ -21,42 +35,39 @@
   
   <!-- Table body -->
   <tbody>
-  <%  @flights.each do |f| %>
+  <%  @pilot_table.each do |p| %>
     <tr>
       <td>
-      	<%= f.avatar.promotions.last.grade.nom %>
+        <img src="<%= p["grade_img"] %>"/>
+      	<%= p["grade"] %>
       </td>
       <td>
-        <%= f.avatar.autruche.callsign %>
+        <%= p["callsign"] %>
       </td>
       <td>
-        <%= Monture.get(f.monture_id).modele %>
+        <img src='<%= p["monture_img"] %>'/>
       </td>
       <td>
-        <%= f.flight_results.victoires.count(:id => 1) %>
+        <%= p["vic_conf"] %>
       </td>
       <td>
-        <%= f.flight_results.victoires.count(:id => 2) %>
+        <%= p["vic_part"] %>
       </td>
       <td>
-        <%= f.tps_vol_hr.to_s + "h" + f.tps_vol_min.to_s %>
+        <%= p["temps_vol"] %>
       </td>
       <td>
-        <%= f.statut_fin_mission.statut %>
+        <%= p["statut"] %>
       </td>
       <td>
-        <%= Role.get(f.role_id).type %>
+        <%= p["role"] %>
       </td>
       <td>
-        <% f.rewards.each do |r| %>
-        	<%= r.decoration.nom %>
-        <% end %>
+        <%= p["deco"] %>
       </td>
     </tr>
     <% end %>
   </tbody>  
 </table>
 
-
-</br>
-<img src="../img/suivi_campagne.png">
+<% end %>

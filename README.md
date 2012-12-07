@@ -1,23 +1,7 @@
-## Change Log:
-
-**30/08/2012**
-* added some (very) basic UI
-* debrief mission can now accept multiple claims, separate from mission debrief itself.
-Not surprisingly, by implementing this flexibility I opened a can of worms , but, eh, it seems to work.
-
-**27/08/2012**
-* added sinatra/reloader
-* refactored admin/mission to use Ajax
-* bugfixing
-
 ## To Do:
-* add flags for campagne en cours et nations jouées pour filtrer tout ce qui est lié à une nationalité
-* fix horrible hack on the temps_vol db submission
-* tighten requirements on Model fields once it is clear what is/isn't absolutely required
+* create helpers for generating all the icons in the tables (planes etc), too much not-DRY at the moment...
 * validate (regex) all text input fields
-* figure out why I can't just use flight_id PK in FlightResults, instead of all of Flight CK...
 * find eloquent way to add revendications dynamically
-* add image fields for all the nifty icons (medailles, etc)
 * use jQ sortable tables plug-in
 
 ## Dev Notes:
@@ -31,6 +15,16 @@ e.g. in Grade table -  'belongs_to :nation' will add an 'id_nation' f key in the
 * It you return a nil obect (record) when querying, trying to access a property (field) of that object will give you an error!
 
 ## (Archive) Change Log:
+**30/08/2012**
+* added some (very) basic UI
+* debrief mission can now accept multiple claims, separate from mission debrief itself.
+Not surprisingly, by implementing this flexibility I opened a can of worms , but, eh, it seems to work.
+
+**27/08/2012**
+* added sinatra/reloader
+* refactored admin/mission to use Ajax
+* bugfixing
+
 **21/08/2012**
 * A lot of refactoring and cleaning up of app and models
 * added session parameters for campagne en cours and pilote to simulate login (temp)

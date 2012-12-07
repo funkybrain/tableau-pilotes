@@ -28,6 +28,19 @@ helpers do
   # this adds the h method from the Rack Utils class  include Rack::Utils
   alias_method :h, :escape_html
 
+  def get_plane_img_src(monture_id, nation_id)
+    path_prefix = "../img/icons/avions/"
+    nation_slug =  Nation.get(nation_id).slug + "/"
+    monture_name = Monture.get(monture_id).modele.gsub!("-", "").downcase + ".png"
+    return image_src = path_prefix + nation_slug + monture_name
+  end
+
+  def get_grade_img_src(grade_id)
+    path_prefix = "../img/icons/grades/"
+    nation_slug =  Grade.get(grade_id).nation.slug + "/"
+    grade_img_src = Grade.get(grade_id).img_src
+    return image_src = path_prefix + nation_slug + grade_img_src
+  end
 end
 
 ### TODO create helper methods used in views a lot e.g. to display icons
@@ -185,6 +198,8 @@ end
 
 # Enregistrer la mission dans la base
 post '/admin/mission' do
+
+  #TODO: don't ask for mission numero, auto-increment based on last numero
 
   campagne = Campagne.get(params[:campagne]);
   n = campagne.missions.new(:numero => params[:numero],
@@ -496,14 +511,63 @@ get '/pilote' do
 end
 
 ### SUIVI CAMPAGNE
-
 get '/campagne' do
-  # get all missions for campagne in session
-  # for now hardwire mission, later must be selectable as dropdown
-  @missnum = 1
-  @flights = Flight.byCampaign(session[:campagne]).byMission(@missnum).all(:order => :avatar_id.asc)
+
+  @m_id = params[:id]
+  # user must choose a mission
+  @missions = Mission.all(:campagne_id => session[:campagne])
+  # get nation slug to display correct icons
+  @nation = Campagne.get(session[:campagne]).nation_id
   
+  if params[:id] == "select"
+    @display_table = false
+
+  else
+    # get all flights for mission :id and campaign in session
+    @flights = Flight.byCampaign(session[:campagne]).byMission(params[:id]).all()
+    # display table for mission
+    @display_table = true
+    @mission =  Mission.get(@m_id).numero.to_s + ": " + Mission.get(@m_id).nom
+   
+    @pilot_table = []
+
+    def createPilotTable
+      # Too much logic in the view, it's horrible
+      # pre-process everthing here, i.e. store all
+      # the table row details in an array of hashes and call in view
+      
+      @flights.each do |f|
+        pilot = Hash.new
+        grade =  f.avatar.promotions(:mission_id => @mission_id).grade
+        if grade.empty?
+         grade = f.avatar.promotions.first().grade
+        end 
+        pilot["grade"]      = grade.nom
+        pilot["grade_img"]  = get_grade_img_src(grade.id)
+        pilot["callsign"]   = f.avatar.autruche.callsign
+        pilot["monture_img"]= get_plane_img_src(f.monture_id, @nation)
+        pilot["vic_conf"]   = f.flight_results.victoires.count(:id => 1)
+        pilot["vic_part"]   = f.flight_results.victoires.count(:id => 2)
+        pilot["temps_vol"]  = f.tps_vol_hr.to_s + "h" + f.tps_vol_min.to_s
+        pilot["statut"]     = f.statut_fin_mission.statut
+        pilot["role"]       = Role.get(f.role_id).type
+        pilot["deco"]       = "" # tbd-> f.rewards.each {|r| r.decoration.nom}
+
+        @pilot_table << pilot
+      end
+    end
+    createPilotTable
+
+  end
+
   erb :campagne
 end
 
+post '/campagne' do
+  # return the mission id and pass to the get /campagne
+  id = params[:id]
+
+  uri = "/campagne?id=#{id}"
+  redirect to(uri)
+end  
 
