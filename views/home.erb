@@ -18,6 +18,7 @@
   
   <!-- Table body -->
   <tbody>
+    <% if @tabgen %>
     <% @tabgen.each do |aut| %>
     <tr>
       <td>
@@ -62,6 +63,7 @@
         <%= aut.palmares %>
       </td>
     </tr>
+    <% end %>
     <% end %>
   </tbody>  
 </table>

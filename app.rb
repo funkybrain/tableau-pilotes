@@ -72,12 +72,13 @@ get '/' do
   # when i should update TabGen.
   if Flight.byAutruche(session[:autruche]).byCampaign(session[:campagne]).count > 0
     TabGen.updateTable(session[:autruche], session[:campagne])
+    # get all flights for campaign in session
+    @tabgen = TabGen.all(:campagne_id => session[:campagne])
   else
     flash.now[:error] = 'Aucunes missions dans cette campagne!'
   end
 
-  # get all flights for campaign in session
-  @tabgen = TabGen.all(:campagne_id => session[:campagne])
+
 
   # display flash messages
   if @autruches.empty?
